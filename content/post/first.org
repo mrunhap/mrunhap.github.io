@@ -2,7 +2,7 @@
 #+DATE: 2021-03-07T22:57:20+08:00
 #+PUBLISHDATE: 2021-03-07T22:57:20+08:00
 #+DRAFT: nil
-#+TAGS: nil, nil
+#+TAGS: test
 #+DESCRIPTION: Short description
 
 * 测试
