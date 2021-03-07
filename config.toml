@@ -1,0 +1,22 @@
+baseURL = "http://example.org/"
+languageCode = "en-us"
+title = "foo bar title"
+theme = "yinyang"
+DefaultContentLanguage = "cn"
+
+[author]
+  name = "404cn"
+  homepage = "https://404cn.github.io/"
+
+[params]
+mainSections = ["post"]
+headTitle = "foo bar title"
+description = "foo bar description"
+favicon = "/logo.png"
+lazyImage = true
+[[params.socials]]
+name = "About Me"
+link = "https://404cn.github.io"
+[[params.socials]]
+name = "Github"
+link = "https://github.com/404cn"
