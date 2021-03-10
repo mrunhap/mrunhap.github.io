@@ -6,16 +6,24 @@
     <description>Recent content on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 10 Mar 2021 10:44:27 +0800</lastBuildDate><atom:link href="https://404cn.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 10 Mar 2021 22:31:11 +0800</lastBuildDate><atom:link href="https://404cn.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>me</title>
+      <link>https://404cn.github.io/about/about/</link>
+      <pubDate>Wed, 10 Mar 2021 22:31:11 +0800</pubDate>
+      
+      <guid>https://404cn.github.io/about/about/</guid>
+      <description>Emacs, Go, Backend.</description>
+    </item>
+    
     <item>
       <title>zathura 简明教程</title>
       <link>https://404cn.github.io/post/how-to-use-zathura/</link>
       <pubDate>Wed, 10 Mar 2021 10:44:27 +0800</pubDate>
       
       <guid>https://404cn.github.io/post/how-to-use-zathura/</guid>
-      <description> Zathura 是 Linux 下的一款 PDF 阅读器，简洁、可配置、拥有 vi-styled 的快捷键。
- 安装 （ArchLinux）
-sudo pacman -S zathura  </description>
+      <description> zathura 简明教程   Zathura 是 Linux 下的一款 PDF 阅读器，简洁、可配置、拥有 vi-styled 的快捷键。
+安装 （ArchLinux）  sudo pacman -S zathura      </description>
     </item>
     
   </channel>
