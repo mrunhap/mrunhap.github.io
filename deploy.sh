@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo -e "\033[0;32mDeploying updates to GitHub Pages...\033[0m"
+rm -rf docs
 hugo
 
 git add -A
@@ -11,4 +12,4 @@ if [ $# -eq 1 ]
 fi
 git commit -m "$msg"
 
-git push origin main
+git push -f origin main
