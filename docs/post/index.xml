@@ -18,15 +18,5 @@
 sudo pacman -S zathura  </description>
     </item>
     
-    <item>
-      <title>first</title>
-      <link>https://404cn.github.io/post/first/</link>
-      <pubDate>Sun, 07 Mar 2021 22:57:20 +0800</pubDate>
-      
-      <guid>https://404cn.github.io/post/first/</guid>
-      <description> 测试  (message &amp;#34;a&amp;#34;)   测试中文 asd 测试 emooji 😈️
-  </description>
-    </item>
-    
   </channel>
 </rss>
