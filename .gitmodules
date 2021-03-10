@@ -1,9 +1,0 @@
-[submodule "themes/onetwothree"]
-	path = themes/onetwothree
-	url = git@github.com:schollz/onetwothree.git
-[submodule "themes/yinyang"]
-	path = themes/yinyang
-	url = git@github.com:joway/hugo-theme-yinyang.git
-[submodule "public"]
-	path = public
-	url = ./public/

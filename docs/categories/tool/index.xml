@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tool on foo bar title</title>
+    <link>https://404cn.github.io/categories/tool/</link>
+    <description>Recent content in tool on foo bar title</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 10 Mar 2021 10:44:27 +0800</lastBuildDate><atom:link href="https://404cn.github.io/categories/tool/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>how-to-use-zathura</title>
+      <link>https://404cn.github.io/post/how-to-use-zathura/</link>
+      <pubDate>Wed, 10 Mar 2021 10:44:27 +0800</pubDate>
+      
+      <guid>https://404cn.github.io/post/how-to-use-zathura/</guid>
+      <description> Zathura 是 Linux 下的一款 PDF 阅读器，简洁、可配置、拥有 vi-styled 的快捷键。
+ 安装 （ArchLinux）
+sudo pacman -S zathura  </description>
+    </item>
+    
+  </channel>
+</rss>
