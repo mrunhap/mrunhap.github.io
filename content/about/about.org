@@ -1,7 +1,0 @@
-#+TITLE: me
-#+DATE: 2021-03-10T22:31:11+08:00
-#+PUBLISHDATE: 2021-03-10T22:31:11+08:00
-#+DRAFT: nil
-#+DESCRIPTION: About myself
-
-Emacs, Go, Backend.
