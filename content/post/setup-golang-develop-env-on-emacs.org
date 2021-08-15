@@ -1,0 +1,6 @@
+#+TITLE: setup-golang-develop-env-on-emacs
+#+DATE: 2021-08-13T00:12:03+08:00
+#+PUBLISHDATE: 2021-08-13T00:12:03+08:00
+#+DRAFT: nil
+#+TAGS: emacs, golang
+#+DESCRIPTION: 配置 Emacs Golang 开发环境
