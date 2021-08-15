@@ -4,7 +4,7 @@ title = ""
 theme = "cactus"
 publishDir = "docs"
 # disqusShortname = "example" # Used when comments is enabled. Cactus will use site title if not set
-googleAnalytics = "G-B9GPCMM1MJ"
+googleAnalytics = "UA-204916222-1"
 
 # Main menu which appears below site header.
 [[menu.main]]
