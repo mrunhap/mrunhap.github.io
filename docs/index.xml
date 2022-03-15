@@ -13,16 +13,11 @@
       <pubDate>Fri, 13 Aug 2021 00:12:03 +0800</pubDate>
       
       <guid>https://404cn.github.io/post/setup-golang-develop-env-on-emacs/</guid>
-      <description>使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 Emacs builtin modes 功能介绍。
+      <description>使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分 享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能 相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑 定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 Emacs builtin modes 功能介绍。
  在使用任何 编辑器/IDE 开发时，最核心的需求无非以下几点：
-  括号的自动匹配
-  代码的自动补全
-  查找定义、引用
-  静态检查
-  在项目中模糊查找（文件/字符串）
-  开启 Emacs 自带的括号匹配  Emacs 自带的 electric-pair-mode 已经足够好用，只不过默认没有开启。
-(setq electric-pair-inhibit-predicate &amp;#39;electric-pair-conservative-inhibit) (add-hook &amp;#39;prog-mode-hook #&amp;#39;electric-pair-mode)    安装 straight.el  在进行下一步配置之前，我们需要先安装 straight.el ，因为我们要用它来安装其他的第三方包。
-(setq straight-check-for-modifications &amp;#39;(check-on-save find-when-checking)) (setq straight-vc-git-default-clone-depth 1) (setq straight-disable-native-compile (when (fboundp &amp;#39;native-comp-available-p) (not (native-comp-available-p)))) (defvar bootstrap-version) (let ((bootstrap-file (expand-file-name &amp;#34;straight/repos/straight.</description>
+ 括号的自动匹配 代码的自动补全 查找定义、引用 静态检查 在项目中模糊查找（文件/字符串）  开启 Emacs 自带的括号匹配  Emacs 自带的 electric-pair-mode 已经足够好用，只不过默认没有开启。
+ (setq electric-pair-inhibit-predicate &amp;#39;electric-pair-conservative-inhibit)  (add-hook &amp;#39;prog-mode-hook #&amp;#39;electric-pair-mode)    安装 straight.el  在进行下一步配置之前，我们需要先安装 straight.el ，因为我们要用它来安 装其他的第三方包。
+(setq straight-check-for-modifications &amp;#39;(check-on-save find-when-checking)) (setq straight-vc-git-default-clone-depth 1)  (setq straight-disable-native-compile  (when (fboundp &amp;#39;native-comp-available-p) 	(not (native-comp-available-p))))  (defvar bootstrap-version) (let ((bootstrap-file  (expand-file-name &amp;#34;straight/repos/straight.</description>
     </item>
     
   </channel>

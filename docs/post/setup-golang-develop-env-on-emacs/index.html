@@ -98,25 +98,19 @@ if (!doNotTrack) {
   
     
 <p>
-使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 <a href="https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md">Emacs builtin modes 功能介绍</a>。</p>
+使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分
+享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能
+相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑
+定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 <a href="https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md">Emacs builtin
+modes 功能介绍</a>。</p>
 <p>
 在使用任何 编辑器/IDE 开发时，最核心的需求无非以下几点：</p>
 <ul>
-<li>
-<p>括号的自动匹配</p>
-</li>
-<li>
-<p>代码的自动补全</p>
-</li>
-<li>
-<p>查找定义、引用</p>
-</li>
-<li>
-<p>静态检查</p>
-</li>
-<li>
-<p>在项目中模糊查找（文件/字符串）</p>
-</li>
+<li>括号的自动匹配</li>
+<li>代码的自动补全</li>
+<li>查找定义、引用</li>
+<li>静态检查</li>
+<li>在项目中模糊查找（文件/字符串）</li>
 </ul>
 <div id="outline-container-headline-1" class="outline-3">
 <h3 id="headline-1">
@@ -125,8 +119,8 @@ if (!doNotTrack) {
 <div id="outline-text-headline-1" class="outline-text-3">
 <p>Emacs 自带的 <code class="verbatim">electric-pair-mode</code> 已经足够好用，只不过默认没有开启。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (setq electric-pair-inhibit-predicate <span style="color:#e6db74">&#39;electric-pair-conservative-inhibit</span>)
-  (add-hook <span style="color:#e6db74">&#39;prog-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>electric-pair-mode)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (setq electric-pair-inhibit-predicate <span style="color:#e6db74">&#39;electric-pair-conservative-inhibit</span>)
+</span></span><span style="display:flex;"><span>  (add-hook <span style="color:#e6db74">&#39;prog-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>electric-pair-mode)</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -135,37 +129,38 @@ if (!doNotTrack) {
 安装 straight.el
 </h3>
 <div id="outline-text-headline-2" class="outline-text-3">
-<p>在进行下一步配置之前，我们需要先安装 <a href="https://github.com/raxod502/straight.el">straight.el</a> ，因为我们要用它来安装其他的第三方包。</p>
+<p>在进行下一步配置之前，我们需要先安装 <a href="https://github.com/raxod502/straight.el">straight.el</a> ，因为我们要用它来安
+装其他的第三方包。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">(setq straight-check-for-modifications <span style="color:#f92672">&#39;</span>(check-on-save find-when-checking))
-(setq straight-vc-git-default-clone-depth <span style="color:#ae81ff">1</span>)
-
-(setq straight-disable-native-compile
-      (when (<span style="color:#a6e22e">fboundp</span> <span style="color:#e6db74">&#39;native-comp-available-p</span>)
-	(not (native-comp-available-p))))
-
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (<span style="color:#a6e22e">expand-file-name</span> <span style="color:#e6db74">&#34;straight/repos/straight.el/bootstrap.el&#34;</span> user-emacs-directory))
-      (bootstrap-version <span style="color:#ae81ff">5</span>))
-  (unless (<span style="color:#a6e22e">file-exists-p</span> bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el&#34;</span>
-         <span style="color:#e6db74">&#39;silent</span> <span style="color:#e6db74">&#39;inhibit-cookies</span>)
-      (<span style="color:#a6e22e">goto-char</span> (<span style="color:#a6e22e">point-max</span>))
-      (eval-print-last-sexp)))
-  (<span style="color:#a6e22e">load</span> bootstrap-file <span style="color:#66d9ef">nil</span> <span style="color:#e6db74">&#39;nomessage</span>))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>(setq straight-check-for-modifications <span style="color:#f92672">&#39;</span>(check-on-save find-when-checking))
+</span></span><span style="display:flex;"><span>(setq straight-vc-git-default-clone-depth <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(setq straight-disable-native-compile
+</span></span><span style="display:flex;"><span>      (when (<span style="color:#a6e22e">fboundp</span> <span style="color:#e6db74">&#39;native-comp-available-p</span>)
+</span></span><span style="display:flex;"><span>	(not (native-comp-available-p))))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(defvar bootstrap-version)
+</span></span><span style="display:flex;"><span>(let ((bootstrap-file
+</span></span><span style="display:flex;"><span>       (<span style="color:#a6e22e">expand-file-name</span> <span style="color:#e6db74">&#34;straight/repos/straight.el/bootstrap.el&#34;</span> user-emacs-directory))
+</span></span><span style="display:flex;"><span>      (bootstrap-version <span style="color:#ae81ff">5</span>))
+</span></span><span style="display:flex;"><span>  (unless (<span style="color:#a6e22e">file-exists-p</span> bootstrap-file)
+</span></span><span style="display:flex;"><span>    (with-current-buffer
+</span></span><span style="display:flex;"><span>        (url-retrieve-synchronously
+</span></span><span style="display:flex;"><span>         <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el&#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#e6db74">&#39;silent</span> <span style="color:#e6db74">&#39;inhibit-cookies</span>)
+</span></span><span style="display:flex;"><span>      (<span style="color:#a6e22e">goto-char</span> (<span style="color:#a6e22e">point-max</span>))
+</span></span><span style="display:flex;"><span>      (eval-print-last-sexp)))
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">load</span> bootstrap-file <span style="color:#66d9ef">nil</span> <span style="color:#e6db74">&#39;nomessage</span>))</span></span></code></pre></div>
 </div>
 <p>straight.el 在安装其他包时需要访问 github，如果你的网络不够 <code class="verbatim">绿色</code> 咳咳…</p>
 <p>
 可以将安装时的 <code class="verbatim">github.com</code> 替换为 <code class="verbatim">github.com.cnpmjs.org</code> 。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">(defun +set-github-mirror (oldfunc <span style="color:#66d9ef">&amp;rest</span> args)
-  (let ((url (<span style="color:#a6e22e">apply</span> oldfunc args)))
-    (replace-regexp-in-string (rx (group <span style="color:#e6db74">&#34;github.com&#34;</span>))
-                              <span style="color:#e6db74">&#34;github.com.cnpmjs.org&#34;</span> url <span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">nil</span> <span style="color:#ae81ff">1</span>)))
-(advice-add <span style="color:#e6db74">&#39;straight-vc-git--encode-url</span> :around <span style="color:#a6e22e">#&#39;</span>+set-github-mirror)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>(defun +set-github-mirror (oldfunc <span style="color:#66d9ef">&amp;rest</span> args)
+</span></span><span style="display:flex;"><span>  (let ((url (<span style="color:#a6e22e">apply</span> oldfunc args)))
+</span></span><span style="display:flex;"><span>    (replace-regexp-in-string (rx (group <span style="color:#e6db74">&#34;github.com&#34;</span>))
+</span></span><span style="display:flex;"><span>                              <span style="color:#e6db74">&#34;github.com.cnpmjs.org&#34;</span> url <span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">nil</span> <span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>(advice-add <span style="color:#e6db74">&#39;straight-vc-git--encode-url</span> :around <span style="color:#a6e22e">#&#39;</span>+set-github-mirror)</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -176,39 +171,43 @@ if (!doNotTrack) {
 <div id="outline-text-headline-3" class="outline-text-3">
 <p>安装 <a href="https://github.com/dominikh/go-mode.el">go-mode.el</a> ，其为我们在进行 Golang 开发时提供了相当多的常用功能。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (straight-use-package <span style="color:#e6db74">&#39;go-mode</span>)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (straight-use-package <span style="color:#e6db74">&#39;go-mode</span>)</span></span></code></pre></div>
 </div>
 <p>设置缩进。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (setq-default tab-width <span style="color:#ae81ff">4</span>
-                indent-tabs-mode <span style="color:#66d9ef">nil</span>)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (setq-default tab-width <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>                indent-tabs-mode <span style="color:#66d9ef">nil</span>)</span></span></code></pre></div>
 </div>
 <p>使用 <code class="verbatim">goimports</code> 代替 <code class="verbatim">gofmt</code> 在文件保存后自动格式化我们的代码</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (setq gofmt-command <span style="color:#e6db74">&#34;goimports&#34;</span>)
-  (add-hook <span style="color:#e6db74">&#39;before-save-hook</span> <span style="color:#a6e22e">#&#39;</span>gofmt-before-save)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (setq gofmt-command <span style="color:#e6db74">&#34;goimports&#34;</span>)
+</span></span><span style="display:flex;"><span>  (add-hook <span style="color:#e6db74">&#39;before-save-hook</span> <span style="color:#a6e22e">#&#39;</span>gofmt-before-save)</span></span></code></pre></div>
 </div>
-<p>如果你使用的是 MacOS 系统，那么需要使用 <a href="https://github.com/purcell/exec-path-from-shell">exec-path-from-shell</a> 让 Emacs 读取系统的环境变量，不然 Emacs 可能找不到你安装的 go</p>
+<p>如果你使用的是 MacOS 系统，那么需要使用 <a href="https://github.com/purcell/exec-path-from-shell">exec-path-from-shell</a> 让 Emacs
+读取系统的环境变量，不然 Emacs 可能找不到你安装的 go。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (when (<span style="color:#a6e22e">eq</span> system-type <span style="color:#e6db74">&#39;darwin</span>)
-    (straight-use-package <span style="color:#e6db74">&#39;exec-path-from-shell</span>)
-    (setq exec-path-from-shell-arguments <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">&#34;-l&#34;</span>))
-    (add-hook <span style="color:#e6db74">&#39;after-init-hook</span> <span style="color:#a6e22e">#&#39;</span>exec-path-from-shell-initialize)
-    (with-eval-after-load <span style="color:#e6db74">&#34;go-mode&#34;</span>
-      (with-eval-after-load <span style="color:#e6db74">&#34;exec-path-from-shell&#34;</span>
-        (exec-path-from-shell-copy-envs <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">&#34;GOPATH&#34;</span> <span style="color:#e6db74">&#34;GO111MODULE&#34;</span> <span style="color:#e6db74">&#34;GOPROXY&#34;</span>)))))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (when (<span style="color:#a6e22e">eq</span> system-type <span style="color:#e6db74">&#39;darwin</span>)
+</span></span><span style="display:flex;"><span>    (straight-use-package <span style="color:#e6db74">&#39;exec-path-from-shell</span>)
+</span></span><span style="display:flex;"><span>    (setq exec-path-from-shell-arguments <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">&#34;-l&#34;</span>))
+</span></span><span style="display:flex;"><span>    (add-hook <span style="color:#e6db74">&#39;after-init-hook</span> <span style="color:#a6e22e">#&#39;</span>exec-path-from-shell-initialize)
+</span></span><span style="display:flex;"><span>    (with-eval-after-load <span style="color:#e6db74">&#34;go-mode&#34;</span>
+</span></span><span style="display:flex;"><span>      (with-eval-after-load <span style="color:#e6db74">&#34;exec-path-from-shell&#34;</span>
+</span></span><span style="display:flex;"><span>        (exec-path-from-shell-copy-envs <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">&#34;GOPATH&#34;</span> <span style="color:#e6db74">&#34;GO111MODULE&#34;</span> <span style="color:#e6db74">&#34;GOPROXY&#34;</span>)))))</span></span></code></pre></div>
 </div>
-<p>go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会打乱我们的窗口布局，其实我们只需要简单的设置下自带的 <code class="verbatim">flymake-mode</code> 就可以方便的在错误之间跳转而不是通过一个单独的 buffer 查看。</p>
+<p>go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会打乱我们的窗
+口布局，其实我们只需要简单的设置下自带的 <code class="verbatim">flymake-mode</code> 就可以方便的在错
+误之间跳转而不是通过一个单独的 buffer 查看。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (add-hook <span style="color:#e6db74">&#39;prog-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>flymake-mode)
-  (with-eval-after-load <span style="color:#e6db74">&#34;flymake&#34;</span>
-    (<span style="color:#a6e22e">define-key</span> flymake-mode-map (kbd <span style="color:#e6db74">&#34;C-c C-b&#34;</span>) <span style="color:#e6db74">&#39;flymake-show-diagnostics-buffer</span>)
-    (<span style="color:#a6e22e">define-key</span> flymake-mode-map (kbd <span style="color:#e6db74">&#34;M-n&#34;</span>) <span style="color:#e6db74">&#39;flymake-goto-next-error</span>)
-    (<span style="color:#a6e22e">define-key</span> flymake-mode-map (kbd <span style="color:#e6db74">&#34;M-p&#34;</span>) <span style="color:#e6db74">&#39;flymake-goto-prev-error</span>))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (add-hook <span style="color:#e6db74">&#39;prog-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>flymake-mode)
+</span></span><span style="display:flex;"><span>  (with-eval-after-load <span style="color:#e6db74">&#34;flymake&#34;</span>
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">define-key</span> flymake-mode-map (kbd <span style="color:#e6db74">&#34;C-c C-b&#34;</span>) <span style="color:#e6db74">&#39;flymake-show-diagnostics-buffer</span>)
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">define-key</span> flymake-mode-map (kbd <span style="color:#e6db74">&#34;M-n&#34;</span>) <span style="color:#e6db74">&#39;flymake-goto-next-error</span>)
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">define-key</span> flymake-mode-map (kbd <span style="color:#e6db74">&#34;M-p&#34;</span>) <span style="color:#e6db74">&#39;flymake-goto-prev-error</span>))</span></span></code></pre></div>
 </div>
-<p>这样就可以使用 <code class="verbatim">M-n</code> ， <code class="verbatim">M-p</code> 在错误之间移动，然后把 go-mode 自动弹出的这个 buffer 关掉。</p>
+<p>这样就可以使用 <code class="verbatim">M-n</code> ， <code class="verbatim">M-p</code> 在错误之间移动，然后把 go-mode 自动弹出的这
+个 buffer 关掉。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (setq gofmt-show-errors <span style="color:#66d9ef">nil</span>)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (setq gofmt-show-errors <span style="color:#66d9ef">nil</span>)</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -217,31 +216,33 @@ if (!doNotTrack) {
 代码补全、跳转
 </h3>
 <div id="outline-text-headline-4" class="outline-text-3">
-<p>安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用 <code class="verbatim">C-p</code> <code class="verbatim">C-n</code> 或者 <code class="verbatim">TAB</code> 进行选择，回车完成补全。</p>
+<p>安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用 <code class="verbatim">C-p</code> <code class="verbatim">C-n</code> 或者 <code class="verbatim">TAB</code> 进行选择，回车完
+成补全。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (straight-use-package <span style="color:#e6db74">&#39;company</span>)
-  (add-hook <span style="color:#e6db74">&#39;prog-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>company-mode)
-  (setq company-tooltip-limit <span style="color:#ae81ff">10</span>
-        company-tooltip-align-annotations <span style="color:#66d9ef">t</span>
-        company-tooltip-width-grow-only <span style="color:#66d9ef">t</span>
-        company-abort-manual-when-too-short <span style="color:#66d9ef">t</span>
-        company-require-match <span style="color:#66d9ef">nil</span>
-        company-backends <span style="color:#f92672">&#39;</span>(company-capf)
-        company-tooltip-margin <span style="color:#ae81ff">0</span>)
-  (with-eval-after-load <span style="color:#e6db74">&#34;company&#34;</span>
-    (<span style="color:#a6e22e">define-key</span> company-active-map [tab] <span style="color:#e6db74">&#39;company-complete-common-or-cycle</span>)
-    (<span style="color:#a6e22e">define-key</span> company-active-map (kbd <span style="color:#e6db74">&#34;TAB&#34;</span>) <span style="color:#e6db74">&#39;company-complete-common-or-cycle</span>)
-    (<span style="color:#a6e22e">define-key</span> company-active-map (kbd <span style="color:#e6db74">&#34;C-p&#34;</span>) <span style="color:#a6e22e">#&#39;</span>company-select-previous)
-    (<span style="color:#a6e22e">define-key</span> company-active-map (kbd <span style="color:#e6db74">&#34;C-n&#34;</span>) <span style="color:#a6e22e">#&#39;</span>company-select-next))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (straight-use-package <span style="color:#e6db74">&#39;company</span>)
+</span></span><span style="display:flex;"><span>  (add-hook <span style="color:#e6db74">&#39;prog-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>company-mode)
+</span></span><span style="display:flex;"><span>  (setq company-tooltip-limit <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>        company-tooltip-align-annotations <span style="color:#66d9ef">t</span>
+</span></span><span style="display:flex;"><span>        company-tooltip-width-grow-only <span style="color:#66d9ef">t</span>
+</span></span><span style="display:flex;"><span>        company-abort-manual-when-too-short <span style="color:#66d9ef">t</span>
+</span></span><span style="display:flex;"><span>        company-require-match <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>        company-backends <span style="color:#f92672">&#39;</span>(company-capf)
+</span></span><span style="display:flex;"><span>        company-tooltip-margin <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>  (with-eval-after-load <span style="color:#e6db74">&#34;company&#34;</span>
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">define-key</span> company-active-map [tab] <span style="color:#e6db74">&#39;company-complete-common-or-cycle</span>)
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">define-key</span> company-active-map (kbd <span style="color:#e6db74">&#34;TAB&#34;</span>) <span style="color:#e6db74">&#39;company-complete-common-or-cycle</span>)
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">define-key</span> company-active-map (kbd <span style="color:#e6db74">&#34;C-p&#34;</span>) <span style="color:#a6e22e">#&#39;</span>company-select-previous)
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">define-key</span> company-active-map (kbd <span style="color:#e6db74">&#34;C-n&#34;</span>) <span style="color:#a6e22e">#&#39;</span>company-select-next))</span></span></code></pre></div>
 </div>
 <p>安装 <a href="https://github.com/joaotavora/eglot">eglot</a> ，一个 Emacs 中轻量级的 LSP 客户端，在 go-mode 中启用。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (straight-use-package <span style="color:#e6db74">&#39;eglot</span>)
-  (add-hook <span style="color:#e6db74">&#39;go-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>eglot-ensure)
-  (setq eglot-ignored-server-capabilites <span style="color:#f92672">&#39;</span>(:documentHighlightProvider)
-        read-process-output-max (<span style="color:#a6e22e">*</span> <span style="color:#ae81ff">1024</span> <span style="color:#ae81ff">1024</span>))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (straight-use-package <span style="color:#e6db74">&#39;eglot</span>)
+</span></span><span style="display:flex;"><span>  (add-hook <span style="color:#e6db74">&#39;go-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>eglot-ensure)
+</span></span><span style="display:flex;"><span>  (setq eglot-ignored-server-capabilites <span style="color:#f92672">&#39;</span>(:documentHighlightProvider)
+</span></span><span style="display:flex;"><span>        read-process-output-max (<span style="color:#a6e22e">*</span> <span style="color:#ae81ff">1024</span> <span style="color:#ae81ff">1024</span>))</span></span></code></pre></div>
 </div>
-<p>eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根目录，如果你的项目包含一些子项目，例如：</p>
+<p>eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根
+目录，如果你的项目包含一些子项目，例如：</p>
 <pre class="example">
 ├── .git
 ├── project1
@@ -254,43 +255,50 @@ if (!doNotTrack) {
     ├── go.mod
     └── main.go
 </pre>
-<p>如果你不想让 project1 中的代码出现在 project2 的补全中，或者在 project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，则推荐使用 <code class="verbatim">go.mod</code> 所在的目录为项目的根目录，解决不同项目间的代码补全与跳转影响。</p>
+<p>如果你不想让 project1 中的代码出现在 project2 的补全中，或者在
+project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，
+则推荐使用 <code class="verbatim">go.mod</code> 所在的目录为项目的根目录，解决不同项目间的代码补全与
+跳转影响。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (with-eval-after-load <span style="color:#e6db74">&#34;go-mode&#34;</span>
-    (with-eval-after-load <span style="color:#e6db74">&#34;project&#34;</span>
-      (defun project-find-go-module (dir)
-        (when-let ((root (locate-dominating-file dir <span style="color:#e6db74">&#34;go.mod&#34;</span>)))
-          (<span style="color:#a6e22e">cons</span> <span style="color:#e6db74">&#39;go-module</span> root)))
-      (cl-defmethod project-root ((project (head go-module)))
-        (<span style="color:#a6e22e">cdr</span> project))
-      (add-hook <span style="color:#e6db74">&#39;project-find-functions</span> <span style="color:#a6e22e">#&#39;</span>project-find-go-module)))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (with-eval-after-load <span style="color:#e6db74">&#34;go-mode&#34;</span>
+</span></span><span style="display:flex;"><span>    (with-eval-after-load <span style="color:#e6db74">&#34;project&#34;</span>
+</span></span><span style="display:flex;"><span>      (defun project-find-go-module (dir)
+</span></span><span style="display:flex;"><span>        (when-let ((root (locate-dominating-file dir <span style="color:#e6db74">&#34;go.mod&#34;</span>)))
+</span></span><span style="display:flex;"><span>          (<span style="color:#a6e22e">cons</span> <span style="color:#e6db74">&#39;go-module</span> root)))
+</span></span><span style="display:flex;"><span>      (cl-defmethod project-root ((project (head go-module)))
+</span></span><span style="display:flex;"><span>        (<span style="color:#a6e22e">cdr</span> project))
+</span></span><span style="display:flex;"><span>      (add-hook <span style="color:#e6db74">&#39;project-find-functions</span> <span style="color:#a6e22e">#&#39;</span>project-find-go-module)))</span></span></code></pre></div>
 </div>
-<p>eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。</p>
+<p>eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，
+为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">(setq eldoc-idle-dealy <span style="color:#ae81ff">2</span>)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>(setq eldoc-idle-dealy <span style="color:#ae81ff">2</span>)</span></span></code></pre></div>
 </div>
-<p>如果你想在补全函数时带有占位符，可以对项目进行单独的配置，只需要在项目根目录的 <code class="verbatim">.dir-locals.el</code> 中添加如下代码，eglot 就会在初始化 gopls 之后修改 gopls 的配置，当然这个功能依赖 <a href="https://github.com/joaotavora/yasnippet">yasnippet</a> ，所以我们也需要安装它。</p>
+<p>如果你想在补全函数时带有占位符，可以对项目进行单独的配置，只需要在项目
+根目录的 <code class="verbatim">.dir-locals.el</code> 中添加如下代码，eglot 就会在初始化 gopls 之后
+修改 gopls 的配置，当然这个功能依赖 <a href="https://github.com/joaotavora/yasnippet">yasnippet</a> ，所以我们也需要安装它。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (straight-use-package <span style="color:#e6db74">&#39;yasnippet</span>)
-  (add-hook <span style="color:#e6db74">&#39;prog-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>yas-minor-mode)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (straight-use-package <span style="color:#e6db74">&#39;yasnippet</span>)
+</span></span><span style="display:flex;"><span>  (add-hook <span style="color:#e6db74">&#39;prog-mode-hook</span> <span style="color:#a6e22e">#&#39;</span>yas-minor-mode)</span></span></code></pre></div>
 </div>
 <p>在项目根目录中创建 <code class="verbatim">.dir-locals.el</code> 。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  ((go-mode
-    <span style="color:#f92672">.</span> ((eglot-workspace-configuration
-        <span style="color:#f92672">.</span> ((:gopls <span style="color:#f92672">.</span> (:usePlaceholders <span style="color:#66d9ef">t</span>)))))))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  ((go-mode
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span> ((eglot-workspace-configuration
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">.</span> ((:gopls <span style="color:#f92672">.</span> (:usePlaceholders <span style="color:#66d9ef">t</span>)))))))</span></span></code></pre></div>
 </div>
 <p>当然也可以在你的配置文件中默认开启，这样就不需要对项目单独设置。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  (setq-default eglot-workspace-configuration
-                <span style="color:#f92672">&#39;</span>((gopls
-                   (usePlaceholders <span style="color:#f92672">.</span> <span style="color:#66d9ef">t</span>))))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  (setq-default eglot-workspace-configuration
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#39;</span>((gopls
+</span></span><span style="display:flex;"><span>                   (usePlaceholders <span style="color:#f92672">.</span> <span style="color:#66d9ef">t</span>))))</span></span></code></pre></div>
 </div>
-<p>另一个非常有用的 tip 是如果你的项目使用了 <a href="https://golang.org/pkg/go/build/#hdr-Build_Constraints">Build Constraints</a> ，也可以针对项目单独修改 <code class="verbatim">gopls</code> 的配置使代码的补全与跳转完美的工作。</p>
+<p>另一个非常有用的 tip 是如果你的项目使用了 <a href="https://golang.org/pkg/go/build/#hdr-Build_Constraints">Build Constraints</a> ，也可以针
+对项目单独修改 <code class="verbatim">gopls</code> 的配置使代码的补全与跳转完美的工作。</p>
 <div class="src src-emacs-lisp">
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-emacs-lisp" data-lang="emacs-lisp">  ((go-mode
-    <span style="color:#f92672">.</span> ((eglot-workspace-configuration
-        <span style="color:#f92672">.</span> ((:gopls <span style="color:#f92672">.</span> (:buildFlags [<span style="color:#e6db74">&#34;-tags=debug&#34;</span>])))))))</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-emacs-lisp" data-lang="emacs-lisp"><span style="display:flex;"><span>  ((go-mode
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span> ((eglot-workspace-configuration
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">.</span> ((:gopls <span style="color:#f92672">.</span> (:buildFlags [<span style="color:#e6db74">&#34;-tags=debug&#34;</span>])))))))</span></span></code></pre></div>
 </div>
 <p>这里就不写出全局开启的示例了，而且这个功能一般不需要全局开启。</p>
 </div>
@@ -300,13 +308,22 @@ if (!doNotTrack) {
 总结
 </h3>
 <div id="outline-text-headline-5" class="outline-text-3">
-<p>Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以在项目中查找文件、字符串等（ <code class="verbatim">project-find-file</code> <code class="verbatim">project-search</code> <code class="verbatim">project-switch-to-buffer</code> ）。</p>
+<p>Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以
+在项目中查找文件、字符串等（ <code class="verbatim">project-find-file</code> <code class="verbatim">project-search</code>
+<code class="verbatim">project-switch-to-buffer</code> ）。</p>
 <p>
-在安装了 eglot、company-mode 后实现了代码的补全、跳转等功能（ <code class="verbatim">xref-find-definitions</code> <code class="verbatim">xref-find-references</code> ），同时 eglot 配合内置的 flymake 也为我们提供了静态检查。</p>
+在安装了 eglot、company-mode 后实现了代码的补全、跳转等功能
+（ <code class="verbatim">xref-find-definitions</code> <code class="verbatim">xref-find-references</code> ），同时 eglot 配合内置
+的 flymake 也为我们提供了静态检查。</p>
 <p>
-当然这些插件的功能远不只这些，例如 eglot 可以帮你重命名函数或变量（同时修改其引用处的名字）， company-mode 不仅可以补全代码也可以补全文件路径、代码片段，在编写 Golang 时需要用到的一些工具链是不是也可以通过 elisp 管理从而达到一个命令进行安装/更新等。</p>
+当然这些插件的功能远不只这些，例如 eglot 可以帮你重命名函数或变量（同
+时修改其引用处的名字）， company-mode 不仅可以补全代码也可以补全文件路
+径、代码片段，在编写 Golang 时需要用到的一些工具链是不是也可以通过
+elisp 管理从而达到一个命令进行安装/更新等。</p>
 <p>
-在 Emacs 中能限制你的只有你的想象力与行动力，种种强大或实用的功能不可能在一篇文章中全部介绍，剩下的就需要你自己发现或者根据自身特定需求进行扩展了。</p>
+在 Emacs 中能限制你的只有你的想象力与行动力，种种强大或实用的功能不可
+能在一篇文章中全部介绍，剩下的就需要你自己发现或者根据自身特定需求进行
+扩展了。</p>
 </div>
 </div>
 
@@ -317,7 +334,7 @@ if (!doNotTrack) {
 
     <footer id="footer">
   <div class="footer-left">
-    Copyright  &copy; 2021   
+    Copyright  &copy; 2022   
   </div>
   <div class="footer-right">
     <nav>
