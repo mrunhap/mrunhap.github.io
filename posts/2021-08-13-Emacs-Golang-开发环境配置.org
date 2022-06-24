@@ -1,0 +1,203 @@
+#+title:  Emacs Golang 开发环境配置
+#+date: <2021-08-13 14:41>
+#+description: Emacs Golang 开发环境配置
+#+filetags: emacs golang
+
+使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分
+享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能
+相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑
+定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 [[https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md][Emacs builtin
+modes 功能介绍]]。
+
+
+在使用任何 编辑器/IDE 开发时，最核心的需求无非以下几点：
+- 括号的自动匹配
+- 代码的自动补全
+- 查找定义、引用
+- 静态检查
+- 在项目中模糊查找（文件/字符串）
+** 开启 Emacs 自带的括号匹配
+Emacs 自带的 =electric-pair-mode= 已经足够好用，只不过默认没有开启。
+#+begin_src emacs-lisp :tangle init.el
+  (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+  (add-hook 'prog-mode-hook #'electric-pair-mode)
+#+end_src
+** 安装 straight.el
+在进行下一步配置之前，我们需要先安装 [[https://github.com/raxod502/straight.el][straight.el]] ，因为我们要用它来安
+装其他的第三方包。
+#+begin_src emacs-lisp :tangle init.el
+(setq straight-check-for-modifications '(check-on-save find-when-checking))
+(setq straight-vc-git-default-clone-depth 1)
+
+(setq straight-disable-native-compile
+      (when (fboundp 'native-comp-available-p)
+	(not (native-comp-available-p))))
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+#+end_src
+straight.el 在安装其他包时需要访问 github，如果你的网络不够 =绿色= 咳咳...
+
+可以将安装时的 =github.com= 替换为 =github.com.cnpmjs.org= 。
+#+begin_src emacs-lisp :tangle init.el
+(defun +set-github-mirror (oldfunc &rest args)
+  (let ((url (apply oldfunc args)))
+    (replace-regexp-in-string (rx (group "github.com"))
+                              "github.com.cnpmjs.org" url nil nil 1)))
+(advice-add 'straight-vc-git--encode-url :around #'+set-github-mirror)
+#+end_src
+** 设置 major-mode
+安装 [[https://github.com/dominikh/go-mode.el][go-mode.el]] ，其为我们在进行 Golang 开发时提供了相当多的常用功能。
+#+begin_src emacs-lisp :tangle init.el
+  (straight-use-package 'go-mode)
+#+end_src
+设置缩进。
+#+begin_src emacs-lisp :tangle init.el
+  (setq-default tab-width 4
+                indent-tabs-mode nil)
+#+end_src
+使用 =goimports= 代替 =gofmt= 在文件保存后自动格式化我们的代码
+#+begin_src emacs-lisp :tangle init.el
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook #'gofmt-before-save)
+#+end_src
+如果你使用的是 MacOS 系统，那么需要使用 [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] 让 Emacs
+读取系统的环境变量，不然 Emacs 可能找不到你安装的 go。
+
+#+begin_src emacs-lisp :tangle init.el
+  (when (eq system-type 'darwin)
+    (straight-use-package 'exec-path-from-shell)
+    (setq exec-path-from-shell-arguments '("-l"))
+    (add-hook 'after-init-hook #'exec-path-from-shell-initialize)
+    (with-eval-after-load "go-mode"
+      (with-eval-after-load "exec-path-from-shell"
+        (exec-path-from-shell-copy-envs '("GOPATH" "GO111MODULE" "GOPROXY")))))
+#+end_src
+go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会打乱我们的窗
+口布局，其实我们只需要简单的设置下自带的 =flymake-mode= 就可以方便的在错
+误之间跳转而不是通过一个单独的 buffer 查看。
+#+begin_src emacs-lisp :tangle init.el
+  (add-hook 'prog-mode-hook #'flymake-mode)
+  (with-eval-after-load "flymake"
+    (define-key flymake-mode-map (kbd "C-c C-b") 'flymake-show-diagnostics-buffer)
+    (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+    (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error))
+#+end_src
+这样就可以使用 =M-n= ， =M-p= 在错误之间移动，然后把 go-mode 自动弹出的这
+个 buffer 关掉。
+#+begin_src emacs-lisp :tangle init.el
+  (setq gofmt-show-errors nil)
+#+end_src
+** 代码补全、跳转
+安装 [[http://company-mode.github.io/][company-mode]] ，在补全时可以使用 =C-p= =C-n= 或者 =TAB= 进行选择，回车完
+成补全。
+#+begin_src emacs-lisp :tangle init.el
+  (straight-use-package 'company)
+  (add-hook 'prog-mode-hook #'company-mode)
+  (setq company-tooltip-limit 10
+        company-tooltip-align-annotations t
+        company-tooltip-width-grow-only t
+        company-abort-manual-when-too-short t
+        company-require-match nil
+        company-backends '(company-capf)
+        company-tooltip-margin 0)
+  (with-eval-after-load "company"
+    (define-key company-active-map [tab] 'company-complete-common-or-cycle)
+    (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
+    (define-key company-active-map (kbd "C-p") #'company-select-previous)
+    (define-key company-active-map (kbd "C-n") #'company-select-next))
+#+end_src
+安装 [[https://github.com/joaotavora/eglot][eglot]] ，一个 Emacs 中轻量级的 LSP 客户端，在 go-mode 中启用。
+#+begin_src emacs-lisp :tangle init.el
+  (straight-use-package 'eglot)
+  (add-hook 'go-mode-hook #'eglot-ensure)
+  (setq eglot-ignored-server-capabilites '(:documentHighlightProvider)
+        read-process-output-max (* 1024 1024))
+#+end_src
+eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根
+目录，如果你的项目包含一些子项目，例如：
+#+begin_example
+├── .git
+├── project1
+│   ├── go.mod
+│   └── main.go
+├── project2
+│   ├── go.mod
+│   └── main.go
+└── project3
+    ├── go.mod
+    └── main.go
+#+end_example
+如果你不想让 project1 中的代码出现在 project2 的补全中，或者在
+project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，
+则推荐使用 =go.mod= 所在的目录为项目的根目录，解决不同项目间的代码补全与
+跳转影响。
+#+begin_src emacs-lisp :tangle init.el
+  (with-eval-after-load "go-mode"
+    (with-eval-after-load "project"
+      (defun project-find-go-module (dir)
+        (when-let ((root (locate-dominating-file dir "go.mod")))
+          (cons 'go-module root)))
+      (cl-defmethod project-root ((project (head go-module)))
+        (cdr project))
+      (add-hook 'project-find-functions #'project-find-go-module)))
+#+end_src
+eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，
+为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。
+#+begin_src emacs-lisp :tangle init.el
+(setq eldoc-idle-dealy 2)
+#+end_src
+如果你想在补全函数时带有占位符，可以对项目进行单独的配置，只需要在项目
+根目录的 =.dir-locals.el= 中添加如下代码，eglot 就会在初始化 gopls 之后
+修改 gopls 的配置，当然这个功能依赖 [[https://github.com/joaotavora/yasnippet][yasnippet]] ，所以我们也需要安装它。
+#+begin_src emacs-lisp :tangle init.el
+  (straight-use-package 'yasnippet)
+  (add-hook 'prog-mode-hook #'yas-minor-mode)
+#+end_src
+在项目根目录中创建 =.dir-locals.el= 。
+#+begin_src emacs-lisp
+  ((go-mode
+    . ((eglot-workspace-configuration
+        . ((:gopls . (:usePlaceholders t)))))))
+#+end_src
+当然也可以在你的配置文件中默认开启，这样就不需要对项目单独设置。
+#+begin_src emacs-lisp :tangle init.el
+  (setq-default eglot-workspace-configuration
+                '((gopls
+                   (usePlaceholders . t))))
+#+end_src
+另一个非常有用的 tip 是如果你的项目使用了 [[https://golang.org/pkg/go/build/#hdr-Build_Constraints][Build Constraints]] ，也可以针
+对项目单独修改 =gopls= 的配置使代码的补全与跳转完美的工作。
+#+begin_src emacs-lisp
+  ((go-mode
+    . ((eglot-workspace-configuration
+        . ((:gopls . (:buildFlags ["-tags=debug"])))))))
+#+end_src
+这里就不写出全局开启的示例了，而且这个功能一般不需要全局开启。
+** 总结
+Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以
+在项目中查找文件、字符串等（ =project-find-file= =project-search=
+=project-switch-to-buffer= ）。
+
+在安装了 eglot、company-mode 后实现了代码的补全、跳转等功能
+（ =xref-find-definitions= =xref-find-references= ），同时 eglot 配合内置
+的 flymake 也为我们提供了静态检查。
+
+当然这些插件的功能远不只这些，例如 eglot 可以帮你重命名函数或变量（同
+时修改其引用处的名字）， company-mode 不仅可以补全代码也可以补全文件路
+径、代码片段，在编写 Golang 时需要用到的一些工具链是不是也可以通过
+elisp 管理从而达到一个命令进行安装/更新等。
+
+在 Emacs 中能限制你的只有你的想象力与行动力，种种强大或实用的功能不可
+能在一篇文章中全部介绍，剩下的就需要你自己发现或者根据自身特定需求进行
+扩展了。
