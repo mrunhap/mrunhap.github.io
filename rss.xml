@@ -4,7 +4,7 @@
 <title><![CDATA[404cn's blog]]></title>
 <description><![CDATA[404cn's blog]]></description>
 <link>https://404cn.github.io/</link>
-<lastBuildDate>Wed, 29 Jun 2022 11:50:48 +0800</lastBuildDate>
+<lastBuildDate>Tue, 05 Jul 2022 22:56:27 +0800</lastBuildDate>
 <item>
   <title><![CDATA[Emacs Golang 开发环境配置]]></title>
   <description><![CDATA[
@@ -27,9 +27,9 @@ modes 功能介绍</a>。
 <li>静态检查</li>
 <li>在项目中模糊查找（文件/字符串）</li>
 </ul>
-<div id="outline-container-org554bb4c" class="outline-2">
-<h2 id="org554bb4c">开启 Emacs 自带的括号匹配</h2>
-<div class="outline-text-2" id="text-org554bb4c">
+<div id="outline-container-org691f49b" class="outline-2">
+<h2 id="org691f49b">开启 Emacs 自带的括号匹配</h2>
+<div class="outline-text-2" id="text-org691f49b">
 <p>
 Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过默认没有开启。
 </p>
@@ -40,9 +40,9 @@ Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过�
 </div>
 </div>
 </div>
-<div id="outline-container-org3099038" class="outline-2">
-<h2 id="org3099038">安装 straight.el</h2>
-<div class="outline-text-2" id="text-org3099038">
+<div id="outline-container-org43e5503" class="outline-2">
+<h2 id="org43e5503">安装 straight.el</h2>
+<div class="outline-text-2" id="text-org43e5503">
 <p>
 在进行下一步配置之前，我们需要先安装 <a href="https://github.com/raxod502/straight.el">straight.el</a> ，因为我们要用它来安
 装其他的第三方包。
@@ -86,9 +86,9 @@ straight.el 在安装其他包时需要访问 github，如果你的网络不够 
 </div>
 </div>
 </div>
-<div id="outline-container-org0d2bee0" class="outline-2">
-<h2 id="org0d2bee0">设置 major-mode</h2>
-<div class="outline-text-2" id="text-org0d2bee0">
+<div id="outline-container-org1b327ab" class="outline-2">
+<h2 id="org1b327ab">设置 major-mode</h2>
+<div class="outline-text-2" id="text-org1b327ab">
 <p>
 安装 <a href="https://github.com/dominikh/go-mode.el">go-mode.el</a> ，其为我们在进行 Golang 开发时提供了相当多的常用功能。
 </p>
@@ -150,9 +150,9 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 </div>
 </div>
 </div>
-<div id="outline-container-org4fd61fd" class="outline-2">
-<h2 id="org4fd61fd">代码补全、跳转</h2>
-<div class="outline-text-2" id="text-org4fd61fd">
+<div id="outline-container-org56bea22" class="outline-2">
+<h2 id="org56bea22">代码补全、跳转</h2>
+<div class="outline-text-2" id="text-org56bea22">
 <p>
 安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用 <code>C-p</code> <code>C-n</code> 或者 <code>TAB</code> 进行选择，回车完
 成补全。
@@ -188,7 +188,7 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根
 目录，如果你的项目包含一些子项目，例如：
 </p>
-<pre class="example" id="orgba4fd2e">
+<pre class="example" id="orge163076">
 ├── .git
 ├── project1
 │   ├── go.mod
@@ -268,9 +268,9 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 </p>
 </div>
 </div>
-<div id="outline-container-orgc72f179" class="outline-2">
-<h2 id="orgc72f179">总结</h2>
-<div class="outline-text-2" id="text-orgc72f179">
+<div id="outline-container-org4a89b58" class="outline-2">
+<h2 id="org4a89b58">总结</h2>
+<div class="outline-text-2" id="text-org4a89b58">
 <p>
 Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以
 在项目中查找文件、字符串等（ <code>project-find-file</code> <code>project-search</code>
