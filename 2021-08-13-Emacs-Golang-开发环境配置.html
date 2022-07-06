@@ -8,11 +8,6 @@
       href="https://404cn.github.io/rss.xml"
       title="RSS feed for https://404cn.github.io/">
 <title>Emacs Golang 开发环境配置</title>
-<!-- This header is inserted into the <head> section of every page: -->
-<!--  (you will need to create the style sheet at -->
-<!--   ~/projects/blog/static/style.css -->
-<!--   and the favicon at -->
-<!--    ~/projects/blog/static/favicon.ico) -->
 <meta name="author" content="LiuBo">
 <meta name="referrer" content="no-referrer">
 <link href= "static/style.css" rel="stylesheet" type="text/css"/>
@@ -29,9 +24,7 @@
 </script>
 </head>
 <body>
-<div id="preamble" class="status"><!-- This preamble is inserted at the beginning of the <body> of every page: -->
-<!--   This particular HTML creates a <div> with a simple linked headline -->
-<div class="header">
+<div id="preamble" class="status"><div class="header">
   <a href="https://404cn.github.io">An nil blog for now</a>
 </div>
 </div>
@@ -56,9 +49,9 @@ modes 功能介绍</a>。
 <li>静态检查</li>
 <li>在项目中模糊查找（文件/字符串）</li>
 </ul>
-<div id="outline-container-org691f49b" class="outline-2">
-<h2 id="org691f49b">开启 Emacs 自带的括号匹配</h2>
-<div class="outline-text-2" id="text-org691f49b">
+<div id="outline-container-org12b7009" class="outline-2">
+<h2 id="org12b7009">开启 Emacs 自带的括号匹配</h2>
+<div class="outline-text-2" id="text-org12b7009">
 <p>
 Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过默认没有开启。
 </p>
@@ -69,9 +62,9 @@ Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过�
 </div>
 </div>
 </div>
-<div id="outline-container-org43e5503" class="outline-2">
-<h2 id="org43e5503">安装 straight.el</h2>
-<div class="outline-text-2" id="text-org43e5503">
+<div id="outline-container-org41d7814" class="outline-2">
+<h2 id="org41d7814">安装 straight.el</h2>
+<div class="outline-text-2" id="text-org41d7814">
 <p>
 在进行下一步配置之前，我们需要先安装 <a href="https://github.com/raxod502/straight.el">straight.el</a> ，因为我们要用它来安
 装其他的第三方包。
@@ -115,9 +108,9 @@ straight.el 在安装其他包时需要访问 github，如果你的网络不够 
 </div>
 </div>
 </div>
-<div id="outline-container-org1b327ab" class="outline-2">
-<h2 id="org1b327ab">设置 major-mode</h2>
-<div class="outline-text-2" id="text-org1b327ab">
+<div id="outline-container-org5621672" class="outline-2">
+<h2 id="org5621672">设置 major-mode</h2>
+<div class="outline-text-2" id="text-org5621672">
 <p>
 安装 <a href="https://github.com/dominikh/go-mode.el">go-mode.el</a> ，其为我们在进行 Golang 开发时提供了相当多的常用功能。
 </p>
@@ -179,9 +172,9 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 </div>
 </div>
 </div>
-<div id="outline-container-org56bea22" class="outline-2">
-<h2 id="org56bea22">代码补全、跳转</h2>
-<div class="outline-text-2" id="text-org56bea22">
+<div id="outline-container-orgf4e0232" class="outline-2">
+<h2 id="orgf4e0232">代码补全、跳转</h2>
+<div class="outline-text-2" id="text-orgf4e0232">
 <p>
 安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用 <code>C-p</code> <code>C-n</code> 或者 <code>TAB</code> 进行选择，回车完
 成补全。
@@ -217,7 +210,7 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根
 目录，如果你的项目包含一些子项目，例如：
 </p>
-<pre class="example" id="orge163076">
+<pre class="example" id="org81c0282">
 ├── .git
 ├── project1
 │   ├── go.mod
@@ -297,9 +290,9 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 </p>
 </div>
 </div>
-<div id="outline-container-org4a89b58" class="outline-2">
-<h2 id="org4a89b58">总结</h2>
-<div class="outline-text-2" id="text-org4a89b58">
+<div id="outline-container-orgb74f438" class="outline-2">
+<h2 id="orgb74f438">总结</h2>
+<div class="outline-text-2" id="text-orgb74f438">
 <p>
 Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以
 在项目中查找文件、字符串等（ <code>project-find-file</code> <code>project-search</code>
@@ -327,11 +320,8 @@ elisp 管理从而达到一个命令进行安装/更新等。
 </div>
 </div>
 <div class="taglist"><a href="https://404cn.github.io/tags.html">Tags</a>: <a href="https://404cn.github.io/tag-emacs.html">emacs</a> <a href="https://404cn.github.io/tag-golang.html">golang</a> </div></div>
-<div id="postamble" class="status"><!-- This postamble is inserted at the end of the <body> of every page: -->
-<!--   This particular HTML creates a <div> with a link to the archive page -->
-<!--   and a licensing stub. -->
-<center>
-  <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/"> <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /> </a>
+<div id="postamble" class="status"><center>
+  <a rel="license" href="https://creativecommons.org/licenses/by/4.0/"> <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /> </a>
   <br />
   <span xmlns:dct="https://purl.org/dc/terms/" href="https://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">
     This blog
@@ -341,8 +331,8 @@ elisp 管理从而达到一个命令进行安装/更新等。
     404cn
   </a>
   is licensed under a
-  <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/">
-    Creative Commons Attribution-ShareAlike 3.0 Unported License
+  <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+    CC-BY 4.0 international license
   </a>
   .
 </center>
