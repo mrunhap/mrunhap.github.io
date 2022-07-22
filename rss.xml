@@ -4,21 +4,18 @@
 <title><![CDATA[404cn's blog]]></title>
 <description><![CDATA[404cn's blog]]></description>
 <link>https://404cn.github.io/</link>
-<lastBuildDate>Wed, 06 Jul 2022 22:49:07 +0800</lastBuildDate>
+<lastBuildDate>Wed, 26 Oct 2022 12:32:10 +0800</lastBuildDate>
 <item>
   <title><![CDATA[Emacs Golang 开发环境配置]]></title>
   <description><![CDATA[
 <p>
-使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分
-享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能
-相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑
-定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 <a href="https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md">Emacs builtin
+使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 <a href="https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md">Emacs builtin
 modes 功能介绍</a>。
 </p>
 
 
 <p>
-在使用任何 编辑器/IDE 开发时，最核心的需求无非以下几点：
+在使用任何编辑器/IDE开发时，最核心的需求无非以下几点：
 </p>
 <ul class="org-ul">
 <li>括号的自动匹配</li>
@@ -27,9 +24,9 @@ modes 功能介绍</a>。
 <li>静态检查</li>
 <li>在项目中模糊查找（文件/字符串）</li>
 </ul>
-<div id="outline-container-org12b7009" class="outline-2">
-<h2 id="org12b7009">开启 Emacs 自带的括号匹配</h2>
-<div class="outline-text-2" id="text-org12b7009">
+<div id="outline-container-org1edefb5" class="outline-2">
+<h2 id="org1edefb5">开启 Emacs 自带的括号匹配</h2>
+<div class="outline-text-2" id="text-org1edefb5">
 <p>
 Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过默认没有开启。
 </p>
@@ -40,12 +37,11 @@ Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过�
 </div>
 </div>
 </div>
-<div id="outline-container-org41d7814" class="outline-2">
-<h2 id="org41d7814">安装 straight.el</h2>
-<div class="outline-text-2" id="text-org41d7814">
+<div id="outline-container-org937917b" class="outline-2">
+<h2 id="org937917b">安装 straight.el</h2>
+<div class="outline-text-2" id="text-org937917b">
 <p>
-在进行下一步配置之前，我们需要先安装 <a href="https://github.com/raxod502/straight.el">straight.el</a> ，因为我们要用它来安
-装其他的第三方包。
+在进行下一步配置之前，我们需要先安装<a href="https://github.com/raxod502/straight.el">straight.el</a>，因为我们要用它来安装其他的第三方包。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(setq straight-check-for-modifications '(check-on-save find-when-checking))
@@ -70,11 +66,11 @@ Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过�
 </pre>
 </div>
 <p>
-straight.el 在安装其他包时需要访问 github，如果你的网络不够 <code>绿色</code> 咳咳&#x2026;
+straight.el 在安装其他包时需要访问 github ，如果你的网络不够 <code>绿色</code>咳咳&#x2026;
 </p>
 
 <p>
-可以将安装时的 <code>github.com</code> 替换为 <code>github.com.cnpmjs.org</code> 。
+可以将安装时的<code>github.com</code>替换为<code>github.com.cnpmjs.org</code>。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(defun +set-github-mirror (oldfunc &amp;rest args)
@@ -86,11 +82,11 @@ straight.el 在安装其他包时需要访问 github，如果你的网络不够 
 </div>
 </div>
 </div>
-<div id="outline-container-org5621672" class="outline-2">
-<h2 id="org5621672">设置 major-mode</h2>
-<div class="outline-text-2" id="text-org5621672">
+<div id="outline-container-org0f4386e" class="outline-2">
+<h2 id="org0f4386e">设置 major-mode</h2>
+<div class="outline-text-2" id="text-org0f4386e">
 <p>
-安装 <a href="https://github.com/dominikh/go-mode.el">go-mode.el</a> ，其为我们在进行 Golang 开发时提供了相当多的常用功能。
+安装<a href="https://github.com/dominikh/go-mode.el">go-mode.el</a>，其为我们在进行 Golang 开发时提供了相当多的常用功能。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(straight-use-package 'go-mode)
@@ -128,9 +124,7 @@ straight.el 在安装其他包时需要访问 github，如果你的网络不够 
 </pre>
 </div>
 <p>
-go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会打乱我们的窗
-口布局，其实我们只需要简单的设置下自带的 <code>flymake-mode</code> 就可以方便的在错
-误之间跳转而不是通过一个单独的 buffer 查看。
+go-mode 在格式化代码时如果发现错误会弹出一个 buffer ，这会打乱我们的窗口布局，其实我们只需要简单的设置下自带的 <code>flymake-mode</code>就可以方便的在错误之间跳转而不是通过一个单独的 buffer 查看。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(add-hook 'prog-mode-hook #'flymake-mode)
@@ -141,8 +135,7 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 </pre>
 </div>
 <p>
-这样就可以使用 <code>M-n</code> ， <code>M-p</code> 在错误之间移动，然后把 go-mode 自动弹出的这
-个 buffer 关掉。
+这样就可以使用 <code>M-n</code> ， <code>M-p</code> 在错误之间移动，然后把 go-mode 自动弹出的这个 buffer 关掉。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(setq gofmt-show-errors nil)
@@ -150,12 +143,11 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 </div>
 </div>
 </div>
-<div id="outline-container-orgf4e0232" class="outline-2">
-<h2 id="orgf4e0232">代码补全、跳转</h2>
-<div class="outline-text-2" id="text-orgf4e0232">
+<div id="outline-container-orgb5b9232" class="outline-2">
+<h2 id="orgb5b9232">代码补全、跳转</h2>
+<div class="outline-text-2" id="text-orgb5b9232">
 <p>
-安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用 <code>C-p</code> <code>C-n</code> 或者 <code>TAB</code> 进行选择，回车完
-成补全。
+安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用<code>C-p</code> <code>C-n</code>或者 <code>TAB</code> 进行选择，回车完成补全。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(straight-use-package 'company)
@@ -185,10 +177,9 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 </pre>
 </div>
 <p>
-eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根
-目录，如果你的项目包含一些子项目，例如：
+eglot 使用 Emacs 内置的project.el管理项目，以.git目录作为项目的根目录，如果你的项目包含一些子项目，例如：
 </p>
-<pre class="example" id="org81c0282">
+<pre class="example" id="org0b374a4">
 ├── .git
 ├── project1
 │   ├── go.mod
@@ -202,9 +193,7 @@ eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项�
 </pre>
 <p>
 如果你不想让 project1 中的代码出现在 project2 的补全中，或者在
-project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，
-则推荐使用 <code>go.mod</code> 所在的目录为项目的根目录，解决不同项目间的代码补全与
-跳转影响。
+project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，则推荐使用<code>go.mod</code>所在的目录为项目的根目录，解决不同项目间的代码补全与跳转影响。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(with-eval-after-load "go-mode"
@@ -218,17 +207,14 @@ project2 中查找定义时不想要 project1 中的定义出现在你的选择�
 </pre>
 </div>
 <p>
-eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，
-为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。
+eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(setq eldoc-idle-dealy 2)
 </pre>
 </div>
 <p>
-如果你想在补全函数时带有占位符，可以对项目进行单独的配置，只需要在项目
-根目录的 <code>.dir-locals.el</code> 中添加如下代码，eglot 就会在初始化 gopls 之后
-修改 gopls 的配置，当然这个功能依赖 <a href="https://github.com/joaotavora/yasnippet">yasnippet</a> ，所以我们也需要安装它。
+如果你想在补全函数时带有占位符，可以对项目进行单独的配置，只需要在项目根目录的<code>.dir-locals.el</code>中添加如下代码，eglot 就会在初始化 gopls 之后修改 gopls 的配置，当然这个功能依赖 <a href="https://github.com/joaotavora/yasnippet">yasnippet</a> ，所以我们也需要安装它。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(straight-use-package 'yasnippet)
@@ -236,7 +222,7 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 </pre>
 </div>
 <p>
-在项目根目录中创建 <code>.dir-locals.el</code> 。
+在项目根目录中创建<code>.dir-locals.el</code>。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">((go-mode
@@ -254,8 +240,7 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 </pre>
 </div>
 <p>
-另一个非常有用的 tip 是如果你的项目使用了 <a href="https://golang.org/pkg/go/build/#hdr-Build_Constraints">Build Constraints</a> ，也可以针
-对项目单独修改 <code>gopls</code> 的配置使代码的补全与跳转完美的工作。
+另一个非常有用的 tip 是如果你的项目使用了<a href="https://golang.org/pkg/go/build/#hdr-Build_Constraints">Build Constraints</a>，也可以针对项目单独修改 <code>gopls</code> 的配置使代码的补全与跳转完美的工作。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">((go-mode
@@ -268,32 +253,25 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 </p>
 </div>
 </div>
-<div id="outline-container-orgb74f438" class="outline-2">
-<h2 id="orgb74f438">总结</h2>
-<div class="outline-text-2" id="text-orgb74f438">
+<div id="outline-container-org7149dac" class="outline-2">
+<h2 id="org7149dac">总结</h2>
+<div class="outline-text-2" id="text-org7149dac">
 <p>
-Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以
-在项目中查找文件、字符串等（ <code>project-find-file</code> <code>project-search</code>
+Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配，project.el可以在项目中查找文件、字符串等（ <code>project-find-file</code> <code>project-search</code>
 <code>project-switch-to-buffer</code> ）。
 </p>
 
 <p>
-在安装了 eglot、company-mode 后实现了代码的补全、跳转等功能
-（ <code>xref-find-definitions</code> <code>xref-find-references</code> ），同时 eglot 配合内置
-的 flymake 也为我们提供了静态检查。
+在安装了 eglot 、company-mode后实现了代码的补全、跳转等功能（<code>xref-find-definitions</code> <code>xref-find-references</code>），同时 eglot 配合内置的 flymake 也为我们提供了静态检查。
 </p>
 
 <p>
-当然这些插件的功能远不只这些，例如 eglot 可以帮你重命名函数或变量（同
-时修改其引用处的名字）， company-mode 不仅可以补全代码也可以补全文件路
-径、代码片段，在编写 Golang 时需要用到的一些工具链是不是也可以通过
+当然这些插件的功能远不只这些，例如 eglot 可以帮你重命名函数或变量（同时修改其引用处的名字）， company-mode 不仅可以补全代码也可以补全文件路径、代码片段，在编写 Golang 时需要用到的一些工具链是不是也可以通过
 elisp 管理从而达到一个命令进行安装/更新等。
 </p>
 
 <p>
-在 Emacs 中能限制你的只有你的想象力与行动力，种种强大或实用的功能不可
-能在一篇文章中全部介绍，剩下的就需要你自己发现或者根据自身特定需求进行
-扩展了。
+在 Emacs 中能限制你的只有你的想象力与行动力，种种强大或实用的功能不可能在一篇文章中全部介绍，剩下的就需要你自己发现或者根据自身特定需求进行扩展了。
 </p>
 </div>
 </div>

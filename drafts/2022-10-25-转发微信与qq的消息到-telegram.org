@@ -1,0 +1,36 @@
+#+title: 转发微信与QQ的消息到 telegram
+#+date: <2022-10-25 23:07>
+#+description: 转发微信与QQ的消息到 telegram
+#+filetags: telegram
+
+由于实在受不了微信的种种问题加上 Emcas 上有个非常好用的 telegram 客户端 telega，决定把微信的消息转移到 telegram 中，QQ则只是顺带（绝对不是为了在工作的时候拿 Emacs 聊天），这种方式我已经使用一周了再没打开微信过，当然某些消息类型是转发不了的，如果这些功能（位置等）对你来说是刚需，那还是只能接着用微信。
+
+* 流程
+- 申请 telegram bot，消息是通过 bot 转发的
+- 配置 ehforwarderbot，efb-telegram-master，用来装发微信消息的 efb-wechat-slave，用来装发 QQ 消息的 ehforwarderbot 和 go-cqhttp。
+- 运行 ehforwarderbot，登录微信与 QQ
+- 消息会全部转发到你申请的 telegram bot 中，如果想将其分开可以创建一个 Group（刚创建的时候需要拉个人进来，可以随便找一个），然后找到你的 bot 输入 =/link=， bot 会自动找出最近的消息的发送者，选择你想分开消息的那个然后选择你刚刚创建的 Group，如果 bot 不在 Group 中会要求添加 bot 到 Group 中，然后接着 link 就行了，之后他发来的消息就会由 bot 转发到这个 Group 中而不是在 bot 那里了。
+
+* 申请 telegram bot
+消息是通过 telegram 的 bot 发送的，所以需要先申请一个自己的 bot，打开 telegram 搜索 @botfather 点击 start。
+1. 输入 =/newbot= 创建 bot
+2. 输入 bot 的称呼和用户名（用户名必须以 bot 结尾）
+3. 创建成功后会得到一个 token，在 =Use this token to access the HTTP API:= 下面，点击会自动复制，要记下来
+4. 配置 bot ：
+- 允许 bot 读取非指令信息，发送 /setprivacy 给 @botfather，选择你的机器人，点Disable
+- 允许将 bot 添加进群组，发送 /setjoingroups，选择你的机器人，点Enable
+- 允许 bot 提供指令列表，发送 /setcommands，选择你的机器人，输入以下内容，复制下来一次性发给 @botfather
+#+begin_example
+help - 显示命令列表.
+link - 将远程会话绑定到 Telegram 群组
+chat - 生成会话头
+recog - 回复语音消息以进行识别
+info - 显示当前 Telegram 聊天的信息.
+unlink_all - 将所有远程会话从 Telegram 群组解绑.
+update_info - 更新群组名称和头像
+extra - 获取更多功能
+#+end_example
+5. 在搜索那里搜出你刚刚创建的 bot，随便给它发个消息，不然第一次 bot 没法发送消息给你
+6. 接着搜索 @get_id_bot，点击 start 会发送你的用户 id 给你，后面要用到
+
+* 配置 ehforwarderbot，efb-telegram-master
