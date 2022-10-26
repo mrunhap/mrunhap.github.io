@@ -4,7 +4,231 @@
 <title><![CDATA[404cn's blog]]></title>
 <description><![CDATA[404cn's blog]]></description>
 <link>https://404cn.github.io/</link>
-<lastBuildDate>Wed, 26 Oct 2022 12:32:10 +0800</lastBuildDate>
+<lastBuildDate>Wed, 26 Oct 2022 14:15:41 +0800</lastBuildDate>
+<item>
+  <title><![CDATA[转发微信与QQ的消息到 telegram]]></title>
+  <description><![CDATA[
+<p>
+由于实在受不了微信的种种问题加上 Emcas 上有个非常好用的 telegram 客户端 telega ，决定把微信的消息转移到 telegram中， QQ 则只是顺带（绝对不是为了在工作的时候拿 Emacs 聊天），这种方式我已经使用一周了再没打开微信过，当然某些消息类型是转发不了的，如果这些功能（位置等）对你来说是刚需，那还是只能接着用微信。
+</p>
+
+<p>
+这个配置基于Ubuntu Server Lts，需要一些 Linux基础（后续或许会补上傻瓜教程或使用 docker-compose 部署的），如果过程中发现需要什么依赖需要自己安装一下，有什么问题也可以通过<a href="mailto:liubolovelife@gmail.com">邮件</a>联系我。
+</p>
+
+<div id="outline-container-org1588e26" class="outline-2">
+<h2 id="org1588e26">流程</h2>
+<div class="outline-text-2" id="text-org1588e26">
+<ul class="org-ul">
+<li>申请telegram bot，消息是通过 bot转发的</li>
+<li>配置 ehforwarderbot ，efb-telegram-master，用来转发微信消息的 efb-wechat-slave，用来转发 QQ消息的 ehforwarderbot 和 go-cqhttp。</li>
+<li>运行 ehforwarderbot，登录微信与 QQ</li>
+<li>消息会全部转发到你申请的telegram bot中，如果想将其分开可以创建一个 Group （刚创建的时候需要拉个人进来，可以随便找一个），然后找到你的 bot输入<code>/link</code>， bot会自动找出最近的消息的发送者，选择你想分开消息的那个然后选择你刚刚创建的 Group ，如果 bot不在 Group 中会要求添加 bot 到 Group 中，然后接着 link 就行了，之后他发来的消息就会由 bot 转发到这个 Group 中而不是在 bot 那里了。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0fe07a6" class="outline-2">
+<h2 id="org0fe07a6">申请 telegram bot</h2>
+<div class="outline-text-2" id="text-org0fe07a6">
+<p>
+消息是通过 telegram 的 bot 发送的，所以需要先申请一个自己的 bot ，打开 telegram搜索@botfather点击 start。
+</p>
+<ol class="org-ol">
+<li>输入<code>/newbot</code>创建 bot</li>
+<li>输入 bot 的称呼和用户名（用户名必须以 bot 结尾）</li>
+<li>创建成功后会得到一个 token ，在 <code>Use this token to access the HTTP API:</code>下面，点击会自动复制，要记下来</li>
+<li>配置 bot ：
+<ul class="org-ul">
+<li>允许 bot 读取非指令信息，发送/setprivacy给 @botfather，选择你的机器人，点Disable</li>
+<li>允许将 bot 添加进群组，发送 /setjoingroups，选择你的机器人，点Enable</li>
+<li>允许 bot 提供指令列表，发送 /setcommands，选择你的机器人，输入以下内容，复制下来一次性发给 @botfather</li>
+</ul></li>
+</ol>
+<pre class="example" id="org1211a6d">
+help - 显示命令列表.
+link - 将远程会话绑定到 Telegram 群组
+chat - 生成会话头
+recog - 回复语音消息以进行识别
+info - 显示当前 Telegram 聊天的信息.
+unlink_all - 将所有远程会话从 Telegram 群组解绑.
+update_info - 更新群组名称和头像
+extra - 获取更多功能
+</pre>
+<ol class="org-ol">
+<li>在搜索那里搜出你刚刚创建的 bot ，随便给它发个消息，不然第一次 bot没法发送消息给你</li>
+<li>接着搜索@get<sub>id</sub><sub>bot</sub>，点击 start会发送你的用户 id 给你，后面要用到</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orge2b8b81" class="outline-2">
+<h2 id="orge2b8b81">配置微信转发</h2>
+<div class="outline-text-2" id="text-orge2b8b81">
+<p>
+安装 efb ，tg 端与微信端
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">pip3 install ehforwarderbot efb-telegram-master
+pip3 install -U git+https://github.com/ehForwarderBot/efb-wechat-slave
+</pre>
+</div>
+
+<p>
+编辑 efb 配置文件，这里使用 emacs （没有的话可以通过 <code>apt update &amp;&amp; apt install emacs</code>安装）：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/config.yaml
+</pre>
+</div>
+
+<p>
+添加如下内容：
+</p>
+<pre class="example" id="orge85c668">
+master_channel: blueset.telegram
+slave_channels:
+- blueset.wechat
+</pre>
+<p>
+然后<code>Ctrl x Ctrl c</code>保存并退出。
+</p>
+
+<p>
+编辑微信端的配置文件：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/blueset.telegram/config.yaml
+</pre>
+</div>
+
+<p>
+添加如下内容：
+</p>
+<pre class="example" id="org39c57ef">
+token: "此处替换成你创建的 bot 的 token"
+admins: [此处替换成你从 @get_id_bot 获取的用户 ID]
+</pre>
+
+<p>
+运行： <code>ehforwarderbot &amp;</code>
+之后会出现二维码，使用微信扫码登录即可。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8acf56a" class="outline-2">
+<h2 id="org8acf56a">配置QQ转发</h2>
+<div class="outline-text-2" id="text-org8acf56a">
+<p>
+安装：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">pip3 install -U git+https://github.com/milkice233/efb-qq-slave
+</pre>
+</div>
+
+<p>
+在 efb 配置文件中添加 QQ 端：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/config.yaml
+</pre>
+</div>
+
+<p>
+在<code>slave_channels</code>下添加<code>milkice.qq</code>：
+</p>
+<pre class="example" id="org984c388">
+master_channel: blueset.telegram
+slave_channels:
+- blueset.wechat
+- milkice.qq
+</pre>
+
+<p>
+配置：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/milkice.qq/config.yaml
+</pre>
+</div>
+
+<p>
+添加如下内容：
+</p>
+<pre class="example" id="org2a60455">
+Client: GoCQHttp                      # 指定要使用的 QQ 客户端（此处为 GoCQHttp）
+GoCQHttp:
+    type: HTTP                        # 指定 efb-qq-plugin-go-cqhttp 与 GoCQHttp 通信的方式 现阶段仅支持 HTTP
+    access_token:
+    api_root: http://127.0.0.1:5700/  # GoCQHttp API接口地址/端口
+    host: 127.0.0.1                   # efb-qq-slave 所监听的地址用于接收消息
+    port: 8000
+</pre>
+
+<p>
+在<a href="https://github.com/Mrs4s/go-cqhttp/releases">这里</a>下载对应的 go-cqhttp 客户端，配置（刚刚下载和 go-cqhttp 的执行文件和配置文件也放到这里）：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/go-cqhttp/config.yml
+</pre>
+</div>
+
+<p>
+添加如下内容：
+</p>
+<pre class="example" id="org8611436">
+account:         # 账号相关
+  uin: 000000000 # QQ 账号
+  password: ''   # QQ 密码，为空时使用扫码登录
+
+message:
+  # 上报数据类型
+  # efb-qq-plugin-go-cqhttp 仅支持 array 类型
+  post-format: array
+  # 为Reply附加更多信息
+  extra-reply-data: true
+
+# 默认中间件锚点
+default-middlewares: &amp;default
+  # 访问密钥，强烈推荐在公网的服务器设置
+  access-token: ''
+
+servers:
+  # HTTP 通信设置
+  - http:
+      # HTTP监听地址
+      address: 0.0.0.0:5700
+      # 反向 HTTP 超时时间, 单位秒
+      # 最小值为 5，小于 5 将会忽略本项设置
+      timeout: 5
+      middlewares:
+        &lt;&lt;: *default # 引用默认中间件
+      # 反向 HTTP POST 地址列表
+      post:
+        - url: 'http://127.0.0.1:8000' # 地址
+          secret: ''                   # 密钥保持为空
+</pre>
+
+<p>
+运行 go-cqhttp：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #8f0075;">cd</span> ~/.ehforwarderbot/profiles/go-cqhttp &amp;&amp; ./go-cqhttp &amp;
+</pre>
+</div>
+<p>
+扫码登录你的 QQ 然后重新运行 ehforwarderbot 即可
+</p>
+</div>
+</div>
+<div class="taglist"><a href="https://404cn.github.io/tags.html">Tags</a>: <a href="https://404cn.github.io/tag-telegram.html">telegram</a> </div>]]></description>
+  <category><![CDATA[telegram]]></category>
+  <link>https://404cn.github.io/2022-10-25-%E8%BD%AC%E5%8F%91%E5%BE%AE%E4%BF%A1%E4%B8%8Eqq%E7%9A%84%E6%B6%88%E6%81%AF%E5%88%B0-telegram.html</link>
+  <guid>https://404cn.github.io/2022-10-25-%E8%BD%AC%E5%8F%91%E5%BE%AE%E4%BF%A1%E4%B8%8Eqq%E7%9A%84%E6%B6%88%E6%81%AF%E5%88%B0-telegram.html</guid>
+  <pubDate>Tue, 25 Oct 2022 23:07:00 +0800</pubDate>
+</item>
 <item>
   <title><![CDATA[Emacs Golang 开发环境配置]]></title>
   <description><![CDATA[
@@ -24,41 +248,41 @@ modes 功能介绍</a>。
 <li>静态检查</li>
 <li>在项目中模糊查找（文件/字符串）</li>
 </ul>
-<div id="outline-container-org1edefb5" class="outline-2">
-<h2 id="org1edefb5">开启 Emacs 自带的括号匹配</h2>
-<div class="outline-text-2" id="text-org1edefb5">
+<div id="outline-container-org8c2405c" class="outline-2">
+<h2 id="org8c2405c">开启 Emacs 自带的括号匹配</h2>
+<div class="outline-text-2" id="text-org8c2405c">
 <p>
 Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过默认没有开启。
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">setq</span> electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
 (add-hook 'prog-mode-hook #'electric-pair-mode)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org937917b" class="outline-2">
-<h2 id="org937917b">安装 straight.el</h2>
-<div class="outline-text-2" id="text-org937917b">
+<div id="outline-container-orga620cfd" class="outline-2">
+<h2 id="orga620cfd">安装 straight.el</h2>
+<div class="outline-text-2" id="text-orga620cfd">
 <p>
 在进行下一步配置之前，我们需要先安装<a href="https://github.com/raxod502/straight.el">straight.el</a>，因为我们要用它来安装其他的第三方包。
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq straight-check-for-modifications '(check-on-save find-when-checking))
-(setq straight-vc-git-default-clone-depth 1)
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">setq</span> straight-check-for-modifications '(check-on-save find-when-checking))
+(<span style="color: #5317ac;">setq</span> straight-vc-git-default-clone-depth 1)
 
-(setq straight-disable-native-compile
-      (when (fboundp 'native-comp-available-p)
+(<span style="color: #5317ac;">setq</span> straight-disable-native-compile
+      (<span style="color: #5317ac;">when</span> (fboundp 'native-comp-available-p)
     (not (native-comp-available-p))))
 
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+(<span style="color: #5317ac;">defvar</span> <span style="color: #00538b;">bootstrap-version</span>)
+(<span style="color: #5317ac;">let</span> ((bootstrap-file
+       (expand-file-name <span style="color: #2544bb;">"straight/repos/straight.el/bootstrap.el"</span> user-emacs-directory))
       (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
+  (<span style="color: #5317ac;">unless</span> (file-exists-p bootstrap-file)
+    (<span style="color: #5317ac;">with-current-buffer</span>
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         <span style="color: #2544bb;">"https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"</span>
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
@@ -73,18 +297,18 @@ straight.el 在安装其他包时需要访问 github ，如果你的网络不够
 可以将安装时的<code>github.com</code>替换为<code>github.com.cnpmjs.org</code>。
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(defun +set-github-mirror (oldfunc &amp;rest args)
-  (let ((url (apply oldfunc args)))
-    (replace-regexp-in-string (rx (group "github.com"))
-                              "github.com.cnpmjs.org" url nil nil 1)))
-(advice-add 'straight-vc-git--encode-url :around #'+set-github-mirror)
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">defun</span> <span style="color: #721045;">+set-github-mirror</span> (oldfunc <span style="color: #8f0075;">&amp;rest</span> args)
+  (<span style="color: #5317ac;">let</span> ((url (apply oldfunc args)))
+    (replace-regexp-in-string (<span style="color: #5317ac;">rx</span> (group <span style="color: #2544bb;">"github.com"</span>))
+                              <span style="color: #2544bb;">"github.com.cnpmjs.org"</span> url nil nil 1)))
+(advice-add 'straight-vc-git--encode-url <span style="color: #8f0075;">:around</span> #'+set-github-mirror)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org0f4386e" class="outline-2">
-<h2 id="org0f4386e">设置 major-mode</h2>
-<div class="outline-text-2" id="text-org0f4386e">
+<div id="outline-container-org4ba97ee" class="outline-2">
+<h2 id="org4ba97ee">设置 major-mode</h2>
+<div class="outline-text-2" id="text-org4ba97ee">
 <p>
 安装<a href="https://github.com/dominikh/go-mode.el">go-mode.el</a>，其为我们在进行 Golang 开发时提供了相当多的常用功能。
 </p>
@@ -96,7 +320,7 @@ straight.el 在安装其他包时需要访问 github ，如果你的网络不够
 设置缩进。
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq-default tab-width 4
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">setq-default</span> tab-width 4
               indent-tabs-mode nil)
 </pre>
 </div>
@@ -104,7 +328,7 @@ straight.el 在安装其他包时需要访问 github ，如果你的网络不够
 使用 <code>goimports</code> 代替 <code>gofmt</code> 在文件保存后自动格式化我们的代码
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq gofmt-command "goimports")
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">setq</span> gofmt-command <span style="color: #2544bb;">"goimports"</span>)
 (add-hook 'before-save-hook #'gofmt-before-save)
 </pre>
 </div>
@@ -114,13 +338,13 @@ straight.el 在安装其他包时需要访问 github ，如果你的网络不够
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(when (eq system-type 'darwin)
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">when</span> (eq system-type 'darwin)
   (straight-use-package 'exec-path-from-shell)
-  (setq exec-path-from-shell-arguments '("-l"))
+  (<span style="color: #5317ac;">setq</span> exec-path-from-shell-arguments '(<span style="color: #2544bb;">"-l"</span>))
   (add-hook 'after-init-hook #'exec-path-from-shell-initialize)
-  (with-eval-after-load "go-mode"
-    (with-eval-after-load "exec-path-from-shell"
-      (exec-path-from-shell-copy-envs '("GOPATH" "GO111MODULE" "GOPROXY")))))
+  (<span style="color: #5317ac;">with-eval-after-load</span> <span style="color: #2544bb;">"go-mode"</span>
+    (<span style="color: #5317ac;">with-eval-after-load</span> <span style="color: #2544bb;">"exec-path-from-shell"</span>
+      (exec-path-from-shell-copy-envs '(<span style="color: #2544bb;">"GOPATH"</span> <span style="color: #2544bb;">"GO111MODULE"</span> <span style="color: #2544bb;">"GOPROXY"</span>)))))
 </pre>
 </div>
 <p>
@@ -128,42 +352,42 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer ，这会�
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(add-hook 'prog-mode-hook #'flymake-mode)
-(with-eval-after-load "flymake"
-  (define-key flymake-mode-map (kbd "C-c C-b") 'flymake-show-diagnostics-buffer)
-  (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-  (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error))
+(<span style="color: #5317ac;">with-eval-after-load</span> <span style="color: #2544bb;">"flymake"</span>
+  (define-key flymake-mode-map (kbd <span style="color: #2544bb;">"C-c C-b"</span>) 'flymake-show-diagnostics-buffer)
+  (define-key flymake-mode-map (kbd <span style="color: #2544bb;">"M-n"</span>) 'flymake-goto-next-error)
+  (define-key flymake-mode-map (kbd <span style="color: #2544bb;">"M-p"</span>) 'flymake-goto-prev-error))
 </pre>
 </div>
 <p>
 这样就可以使用 <code>M-n</code> ， <code>M-p</code> 在错误之间移动，然后把 go-mode 自动弹出的这个 buffer 关掉。
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq gofmt-show-errors nil)
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">setq</span> gofmt-show-errors nil)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgb5b9232" class="outline-2">
-<h2 id="orgb5b9232">代码补全、跳转</h2>
-<div class="outline-text-2" id="text-orgb5b9232">
+<div id="outline-container-orgd628e12" class="outline-2">
+<h2 id="orgd628e12">代码补全、跳转</h2>
+<div class="outline-text-2" id="text-orgd628e12">
 <p>
 安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用<code>C-p</code> <code>C-n</code>或者 <code>TAB</code> 进行选择，回车完成补全。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(straight-use-package 'company)
 (add-hook 'prog-mode-hook #'company-mode)
-(setq company-tooltip-limit 10
+(<span style="color: #5317ac;">setq</span> company-tooltip-limit 10
       company-tooltip-align-annotations t
       company-tooltip-width-grow-only t
       company-abort-manual-when-too-short t
       company-require-match nil
       company-backends '(company-capf)
       company-tooltip-margin 0)
-(with-eval-after-load "company"
+(<span style="color: #5317ac;">with-eval-after-load</span> <span style="color: #2544bb;">"company"</span>
   (define-key company-active-map [tab] 'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "C-p") #'company-select-previous)
-  (define-key company-active-map (kbd "C-n") #'company-select-next))
+  (define-key company-active-map (kbd <span style="color: #2544bb;">"TAB"</span>) 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd <span style="color: #2544bb;">"C-p"</span>) #'company-select-previous)
+  (define-key company-active-map (kbd <span style="color: #2544bb;">"C-n"</span>) #'company-select-next))
 </pre>
 </div>
 <p>
@@ -172,14 +396,14 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer ，这会�
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(straight-use-package 'eglot)
 (add-hook 'go-mode-hook #'eglot-ensure)
-(setq eglot-ignored-server-capabilites '(:documentHighlightProvider)
+(<span style="color: #5317ac;">setq</span> eglot-ignored-server-capabilites '(<span style="color: #8f0075;">:documentHighlightProvider</span>)
       read-process-output-max (* 1024 1024))
 </pre>
 </div>
 <p>
 eglot 使用 Emacs 内置的project.el管理项目，以.git目录作为项目的根目录，如果你的项目包含一些子项目，例如：
 </p>
-<pre class="example" id="org0b374a4">
+<pre class="example" id="org14a1a6b">
 ├── .git
 ├── project1
 │   ├── go.mod
@@ -196,12 +420,12 @@ eglot 使用 Emacs 内置的project.el管理项目，以.git目录作为项目�
 project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，则推荐使用<code>go.mod</code>所在的目录为项目的根目录，解决不同项目间的代码补全与跳转影响。
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(with-eval-after-load "go-mode"
-  (with-eval-after-load "project"
-    (defun project-find-go-module (dir)
-      (when-let ((root (locate-dominating-file dir "go.mod")))
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">with-eval-after-load</span> <span style="color: #2544bb;">"go-mode"</span>
+  (<span style="color: #5317ac;">with-eval-after-load</span> <span style="color: #2544bb;">"project"</span>
+    (<span style="color: #5317ac;">defun</span> <span style="color: #721045;">project-find-go-module</span> (dir)
+      (<span style="color: #5317ac;">when-let</span> ((root (locate-dominating-file dir <span style="color: #2544bb;">"go.mod"</span>)))
         (cons 'go-module root)))
-    (cl-defmethod project-root ((project (head go-module)))
+    (<span style="color: #5317ac;">cl-defmethod</span> <span style="color: #721045;">project-root</span> ((project (head go-module)))
       (cdr project))
     (add-hook 'project-find-functions #'project-find-go-module)))
 </pre>
@@ -210,7 +434,7 @@ project2 中查找定义时不想要 project1 中的定义出现在你的选择�
 eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq eldoc-idle-dealy 2)
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">setq</span> eldoc-idle-dealy 2)
 </pre>
 </div>
 <p>
@@ -227,14 +451,14 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">((go-mode
   . ((eglot-workspace-configuration
-      . ((:gopls . (:usePlaceholders t)))))))
+      . ((<span style="color: #8f0075;">:gopls</span> . (<span style="color: #8f0075;">:usePlaceholders</span> t)))))))
 </pre>
 </div>
 <p>
 当然也可以在你的配置文件中默认开启，这样就不需要对项目单独设置。
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq-default eglot-workspace-configuration
+<pre class="src src-emacs-lisp">(<span style="color: #5317ac;">setq-default</span> eglot-workspace-configuration
               '((gopls
                  (usePlaceholders . t))))
 </pre>
@@ -245,7 +469,7 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">((go-mode
   . ((eglot-workspace-configuration
-      . ((:gopls . (:buildFlags ["-tags=debug"])))))))
+      . ((<span style="color: #8f0075;">:gopls</span> . (<span style="color: #8f0075;">:buildFlags</span> [<span style="color: #2544bb;">"-tags=debug"</span>])))))))
 </pre>
 </div>
 <p>
@@ -253,9 +477,9 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 </p>
 </div>
 </div>
-<div id="outline-container-org7149dac" class="outline-2">
-<h2 id="org7149dac">总结</h2>
-<div class="outline-text-2" id="text-org7149dac">
+<div id="outline-container-org03dc4db" class="outline-2">
+<h2 id="org03dc4db">总结</h2>
+<div class="outline-text-2" id="text-org03dc4db">
 <p>
 Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配，project.el可以在项目中查找文件、字符串等（ <code>project-find-file</code> <code>project-search</code>
 <code>project-switch-to-buffer</code> ）。
