@@ -1,0 +1,50 @@
+#+title: Windows Env Setup
+#+date: <2022-11-08 12:45>
+#+description:
+#+filetags: windows
+
+#+begin_src
+scoop install git go python ripgrep fd diffutils aspell global delta kubectl
+
+scoop bucket add extras
+scoop install archwsl autohotkey windows-terminal powertoys spotify foobar2000 crow-translate telegram qbittorrent discord plex-desktop wechat universal-ctags firefox syncthingtray
+
+scoop bucket add versions
+scoop install steam tinymediamanager3
+
+scoop bucket add nerd-fonts
+scoop install Cascadia-Code
+
+scoop bucket add java
+scoop install corretto8-jre
+
+scoop install gcc
+scoop bucket add wsw0108 https://github.com/wsw0108/scoop-bucket.git
+scoop install librime
+
+pip3 install epc orjson six pygments pyright
+
+cd ~
+git clone https://github.com/404cn/dotfiles.git
+cd dotfiles
+cp .\.gitconfig ../
+cp .\.gitingore ../
+cp .\.globalrc ../
+
+cd ~/AppData/Roaming
+git clone https://github.com/404cn/eatemacs.git .emacs.d
+git clone https://github.com/404cn/Rime.git
+#+end_src
+
+* Use wsl2
+wsl --set-version <name> 2
+
+* Dual boot
+
+** Turn off fast startup
+https://www.tenforums.com/tutorials/4189-turn-off-fast-startup-windows-10-a.html
+
+** TODO Time not right
+
+* Change keyboard delay and speed
+Control panel->keyboard(icon view)
