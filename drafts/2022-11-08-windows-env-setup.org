@@ -7,7 +7,7 @@
 scoop install git go python ripgrep fd diffutils aspell global delta kubectl
 
 scoop bucket add extras
-scoop install archwsl autohotkey windows-terminal powertoys spotify foobar2000 crow-translate telegram qbittorrent discord plex-desktop wechat universal-ctags firefox syncthingtray
+scoop install emacs archwsl autohotkey windows-terminal powertoys spotify foobar2000 crow-translate telegram qbittorrent discord plex-desktop wechat universal-ctags firefox syncthingtray
 
 scoop bucket add versions
 scoop install steam tinymediamanager3
