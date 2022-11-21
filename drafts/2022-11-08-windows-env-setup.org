@@ -4,25 +4,25 @@
 #+filetags: windows
 
 #+begin_src
-scoop install git go python ripgrep fd diffutils aspell global delta kubectl
+scoop install git go python ripgrep fd diffutils aspell global delta kubectl make
 
 scoop bucket add extras
-scoop install emacs archwsl autohotkey windows-terminal powertoys spotify foobar2000 crow-translate telegram qbittorrent discord plex-desktop wechat universal-ctags firefox syncthingtray
-
-scoop bucket add versions
-scoop install steam tinymediamanager3
+# archwsl qbittorrent discord plex-desktop wechat 
+scoop install emacs autohotkey windows-terminal powertoys spotify foobar2000 crow-translate telegramuniversal-ctags firefox syncthingtray
 
 scoop bucket add nerd-fonts
 scoop install Cascadia-Code
 
-scoop bucket add java
-scoop install corretto8-jre
+pip3 install epc orjson six pygments pyright
 
 scoop install gcc
 scoop bucket add wsw0108 https://github.com/wsw0108/scoop-bucket.git
 scoop install librime
 
-pip3 install epc orjson six pygments pyright
+scoop bucket add versions
+scoop install steam tinymediamanager3
+scoop bucket add java
+scoop install corretto8-jre
 
 cd ~
 git clone https://github.com/404cn/dotfiles.git
