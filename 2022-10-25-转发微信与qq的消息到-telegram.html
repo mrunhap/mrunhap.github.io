@@ -5,8 +5,8 @@
 <meta name="description" content="转发微信与QQ的消息到 telegram">
 <link rel="alternate"
       type="application/rss+xml"
-      href="https://404cn.github.io/rss.xml"
-      title="RSS feed for https://404cn.github.io/">
+      href="https://mrunhap.github.io/rss.xml"
+      title="RSS feed for https://mrunhap.github.io/">
 <title>转发微信与QQ的消息到 telegram</title>
 <meta name="author" content="LiuBo">
 <meta name="referrer" content="no-referrer">
@@ -25,49 +25,49 @@
 </head>
 <body>
 <div id="preamble" class="status"><div class="header">
-  <a href="https://404cn.github.io">啊，这是什么？失忆喷雾？喷一下。啊，这是什么？失忆喷雾？喷一下。啊，这是...</a>
+  <a href="https://mrunhap.github.io">HOME</a>
 </div>
 </div>
 <div id="content">
-<div class="post-date">25 Oct 2022</div><h1 class="post-title"><a href="https://404cn.github.io/2022-10-25-转发微信与qq的消息到-telegram.html">转发微信与QQ的消息到 telegram</a></h1>
+<div class="post-date">25 Oct 2022</div><h1 class="post-title"><a href="https://mrunhap.github.io/2022-10-25-转发微信与qq的消息到-telegram.html">转发微信与QQ的消息到 telegram</a></h1>
 <p>
-由于实在受不了微信的种种问题加上 Emcas 上有个非常好用的 telegram 客户端 telega ，决定把微信的消息转移到 telegram中， QQ 则只是顺带（绝对不是为了在工作的时候拿 Emacs 聊天），这种方式我已经使用一周了再没打开微信过，当然某些消息类型是转发不了的，如果这些功能（位置等）对你来说是刚需，那还是只能接着用微信。
+由于实在受不了微信的种种问题加上 Emcas 上有个非常好用的 telegram 客户端 telega，决定把微信的消息转移到 telegram 中，QQ则只是顺带（绝对不是为了在工作的时候拿 Emacs 聊天），这种方式我已经使用一周了再没打开微信过，当然某些消息类型是转发不了的，如果这些功能（位置等）对你来说是刚需，那还是只能接着用微信。
 </p>
 
 <p>
-这个配置基于Ubuntu Server Lts，需要一些 Linux基础（后续或许会补上傻瓜教程或使用 docker-compose 部署的），如果过程中发现需要什么依赖需要自己安装一下，有什么问题也可以通过<a href="mailto:liubolovelife@gmail.com">邮件</a>联系我。
+这个配置基于 Ubuntu Server Lts，需要一些 Linux 基础（后续或许会补上傻瓜教程或使用 docker-compose 部署的），如果过程中发现需要什么依赖需要自己安装一下，有什么问题也可以通过<a href="mailto:liubolovelife@gmail.com">邮件</a>联系我。
 </p>
 
-<div id="outline-container-org1588e26" class="outline-2">
-<h2 id="org1588e26">流程</h2>
-<div class="outline-text-2" id="text-org1588e26">
+<div id="outline-container-orgccbb306" class="outline-2">
+<h2 id="orgccbb306">流程</h2>
+<div class="outline-text-2" id="text-orgccbb306">
 <ul class="org-ul">
-<li>申请telegram bot，消息是通过 bot转发的</li>
-<li>配置 ehforwarderbot ，efb-telegram-master，用来转发微信消息的 efb-wechat-slave，用来转发 QQ消息的 ehforwarderbot 和 go-cqhttp。</li>
+<li>申请 telegram bot，消息是通过 bot 转发的</li>
+<li>配置 ehforwarderbot，efb-telegram-master，用来转发微信消息的 efb-wechat-slave，用来转发 QQ 消息的 ehforwarderbot 和 go-cqhttp。</li>
 <li>运行 ehforwarderbot，登录微信与 QQ</li>
-<li>消息会全部转发到你申请的telegram bot中，如果想将其分开可以创建一个 Group （刚创建的时候需要拉个人进来，可以随便找一个），然后找到你的 bot输入<code>/link</code>， bot会自动找出最近的消息的发送者，选择你想分开消息的那个然后选择你刚刚创建的 Group ，如果 bot不在 Group 中会要求添加 bot 到 Group 中，然后接着 link 就行了，之后他发来的消息就会由 bot 转发到这个 Group 中而不是在 bot 那里了。</li>
+<li>消息会全部转发到你申请的 telegram bot 中，如果想将其分开可以创建一个 Group（刚创建的时候需要拉个人进来，可以随便找一个），然后找到你的 bot 输入 =/link=， bot 会自动找出最近的消息的发送者，选择你想分开消息的那个然后选择你刚刚创建的 Group，如果 bot 不在 Group 中会要求添加 bot 到 Group 中，然后接着 link 就行了，之后他发来的消息就会由 bot 转发到这个 Group 中而不是在 bot 那里了。</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0fe07a6" class="outline-2">
-<h2 id="org0fe07a6">申请 telegram bot</h2>
-<div class="outline-text-2" id="text-org0fe07a6">
+<div id="outline-container-orgd6d6304" class="outline-2">
+<h2 id="orgd6d6304">申请 telegram bot</h2>
+<div class="outline-text-2" id="text-orgd6d6304">
 <p>
-消息是通过 telegram 的 bot 发送的，所以需要先申请一个自己的 bot ，打开 telegram搜索@botfather点击 start。
+消息是通过 telegram 的 bot 发送的，所以需要先申请一个自己的 bot，打开 telegram 搜索 @botfather 点击 start。
 </p>
 <ol class="org-ol">
-<li>输入<code>/newbot</code>创建 bot</li>
+<li>输入 <code>/newbot</code> 创建 bot</li>
 <li>输入 bot 的称呼和用户名（用户名必须以 bot 结尾）</li>
-<li>创建成功后会得到一个 token ，在 <code>Use this token to access the HTTP API:</code>下面，点击会自动复制，要记下来</li>
+<li>创建成功后会得到一个 token，在 <code>Use this token to access the HTTP API:</code> 下面，点击会自动复制，要记下来</li>
 <li>配置 bot ：
 <ul class="org-ul">
-<li>允许 bot 读取非指令信息，发送/setprivacy给 @botfather，选择你的机器人，点Disable</li>
+<li>允许 bot 读取非指令信息，发送 /setprivacy 给 @botfather，选择你的机器人，点Disable</li>
 <li>允许将 bot 添加进群组，发送 /setjoingroups，选择你的机器人，点Enable</li>
 <li>允许 bot 提供指令列表，发送 /setcommands，选择你的机器人，输入以下内容，复制下来一次性发给 @botfather</li>
 </ul></li>
 </ol>
-<pre class="example" id="org1211a6d">
+<pre class="example" id="org46e0829">
 help - 显示命令列表.
 link - 将远程会话绑定到 Telegram 群组
 chat - 生成会话头
@@ -78,17 +78,17 @@ update_info - 更新群组名称和头像
 extra - 获取更多功能
 </pre>
 <ol class="org-ol">
-<li>在搜索那里搜出你刚刚创建的 bot ，随便给它发个消息，不然第一次 bot没法发送消息给你</li>
-<li>接着搜索@get<sub>id</sub><sub>bot</sub>，点击 start会发送你的用户 id 给你，后面要用到</li>
+<li>在搜索那里搜出你刚刚创建的 bot，随便给它发个消息，不然第一次 bot 没法发送消息给你</li>
+<li>接着搜索 @get<sub>id</sub><sub>bot</sub>，点击 start 会发送你的用户 id 给你，后面要用到</li>
 </ol>
 </div>
 </div>
 
-<div id="outline-container-orge2b8b81" class="outline-2">
-<h2 id="orge2b8b81">配置微信转发</h2>
-<div class="outline-text-2" id="text-orge2b8b81">
+<div id="outline-container-org0b7a743" class="outline-2">
+<h2 id="org0b7a743">配置微信转发</h2>
+<div class="outline-text-2" id="text-org0b7a743">
 <p>
-安装 efb ，tg 端与微信端
+安装efb，tg 端与微信端
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">pip3 install ehforwarderbot efb-telegram-master
@@ -97,7 +97,7 @@ pip3 install -U git+https://github.com/ehForwarderBot/efb-wechat-slave
 </div>
 
 <p>
-编辑 efb 配置文件，这里使用 emacs （没有的话可以通过 <code>apt update &amp;&amp; apt install emacs</code>安装）：
+编辑 efb 配置文件，这里使用 emacs（没有的话可以通过 <code>apt update &amp;&amp; apt install emacs</code> 安装）：
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/config.yaml
@@ -107,13 +107,13 @@ pip3 install -U git+https://github.com/ehForwarderBot/efb-wechat-slave
 <p>
 添加如下内容：
 </p>
-<pre class="example" id="orge85c668">
+<pre class="example" id="org2950ed5">
 master_channel: blueset.telegram
 slave_channels:
 - blueset.wechat
 </pre>
 <p>
-然后<code>Ctrl x Ctrl c</code>保存并退出。
+然后 <code>Ctrl x Ctrl c</code> 保存并退出。
 </p>
 
 <p>
@@ -127,7 +127,7 @@ slave_channels:
 <p>
 添加如下内容：
 </p>
-<pre class="example" id="org39c57ef">
+<pre class="example" id="org00831d6">
 token: "此处替换成你创建的 bot 的 token"
 admins: [此处替换成你从 @get_id_bot 获取的用户 ID]
 </pre>
@@ -139,9 +139,9 @@ admins: [此处替换成你从 @get_id_bot 获取的用户 ID]
 </div>
 </div>
 
-<div id="outline-container-org8acf56a" class="outline-2">
-<h2 id="org8acf56a">配置QQ转发</h2>
-<div class="outline-text-2" id="text-org8acf56a">
+<div id="outline-container-orgd04e7b4" class="outline-2">
+<h2 id="orgd04e7b4">配置QQ转发</h2>
+<div class="outline-text-2" id="text-orgd04e7b4">
 <p>
 安装：
 </p>
@@ -159,9 +159,9 @@ admins: [此处替换成你从 @get_id_bot 获取的用户 ID]
 </div>
 
 <p>
-在<code>slave_channels</code>下添加<code>milkice.qq</code>：
+在 <code>slave_channels</code> 下添加 <code>milkice.qq</code> ：
 </p>
-<pre class="example" id="org984c388">
+<pre class="example" id="org3be0ca5">
 master_channel: blueset.telegram
 slave_channels:
 - blueset.wechat
@@ -179,7 +179,7 @@ slave_channels:
 <p>
 添加如下内容：
 </p>
-<pre class="example" id="org2a60455">
+<pre class="example" id="org06851bb">
 Client: GoCQHttp                      # 指定要使用的 QQ 客户端（此处为 GoCQHttp）
 GoCQHttp:
     type: HTTP                        # 指定 efb-qq-plugin-go-cqhttp 与 GoCQHttp 通信的方式 现阶段仅支持 HTTP
@@ -200,7 +200,7 @@ GoCQHttp:
 <p>
 添加如下内容：
 </p>
-<pre class="example" id="org8611436">
+<pre class="example" id="org875c75b">
 account:         # 账号相关
   uin: 000000000 # QQ 账号
   password: ''   # QQ 密码，为空时使用扫码登录
@@ -237,15 +237,15 @@ servers:
 运行 go-cqhttp：
 </p>
 <div class="org-src-container">
-<pre class="src src-bash"><span style="color: #8f0075;">cd</span> ~/.ehforwarderbot/profiles/go-cqhttp &amp;&amp; ./go-cqhttp &amp;
+<pre class="src src-bash"><span style="color: #483d8b;">cd</span> ~/.ehforwarderbot/profiles/go-cqhttp &amp;&amp; ./go-cqhttp &amp;
 </pre>
 </div>
 <p>
-扫码登录你的 QQ 然后重新运行 ehforwarderbot 即可
+扫码登录你的QQ然后重新运行 ehforwarderbot 即可
 </p>
 </div>
 </div>
-<div class="taglist"><a href="https://404cn.github.io/tags.html">Tags</a>: <a href="https://404cn.github.io/tag-telegram.html">telegram</a> </div></div>
+<div class="taglist"><a href="https://mrunhap.github.io/tags.html">Tags</a>: <a href="https://mrunhap.github.io/tag-telegram.html">telegram</a> </div></div>
 <div id="postamble" class="status"><center>
   <a rel="license" href="https://creativecommons.org/licenses/by/4.0/"> <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /> </a>
   <br />
@@ -254,7 +254,7 @@ servers:
   </span>
   by
   <a href="mailto:liubolovelife@gmail.com">
-    404cn
+    mrunhap
   </a>
   is licensed under a
   <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">
