@@ -7,10 +7,11 @@
       href="https://mrunhap.github.io/rss.xml"
       title="RSS feed for https://mrunhap.github.io/">
 <title>mrunhap's blog</title>
-<meta name="author" content="LiuBo">
+<meta name="author" content="mrunhap">
 <meta name="referrer" content="no-referrer">
 <link href= "static/style.css" rel="stylesheet" type="text/css"/>
 <link rel="icon" href="static/favicon.ico">
+<meta name ="description" content="feedId:41459996870678531+userId:67829163902733312">
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6C4308NQ6Q"></script>
@@ -28,15 +29,288 @@
 </div>
 </div>
 <div id="content">
-<h2 class="post-title"><a href="https://mrunhap.github.io/2022-10-25-转发微信与qq的消息到-telegram.html">转发微信与QQ的消息到 telegram</a></h2><div class="post-date">25 Oct 2022</div><p>
-由于实在受不了微信的种种问题加上 Emcas 上有个非常好用的 telegram 客户端 telega，决定把微信的消息转移到 telegram 中，QQ则只是顺带（绝对不是为了在工作的时候拿 Emacs 聊天），这种方式我已经使用一周了再没打开微信过，当然某些消息类型是转发不了的，如果这些功能（位置等）对你来说是刚需，那还是只能接着用微信。
-</p><div class="taglist"><a href="https://mrunhap.github.io/tags.html">Tags</a>: <a href="https://mrunhap.github.io/tag-telegram.html">telegram</a> </div><h2 class="post-title"><a href="https://mrunhap.github.io/2021-08-13-Emacs-Golang-开发环境配置.html">Emacs Golang 开发环境配置</a></h2><div class="post-date">13 Aug 2021</div><p>
-使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分
-享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能
-相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑
-定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 <a href="https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md">Emacs builtin
+
+<div class="post-date">13 Aug 2021</div><h1 class="post-title"><a href="https://mrunhap.github.io/2021-08-13-Emacs-Golang-开发环境配置.html">Emacs Golang 开发环境配置</a></h1>
+<nav id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf89cf1d">1. 开启 Emacs 自带的括号匹配</a></li>
+<li><a href="#orgfadb5b0">2. 安装 straight.el</a></li>
+<li><a href="#org225656a">3. 设置 major-mode</a></li>
+<li><a href="#org4413632">4. 代码补全、跳转</a></li>
+<li><a href="#org84765dd">5. 总结</a></li>
+</ul>
+</div>
+</nav>
+<p>
+使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 <a href="https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md">Emacs builtin
 modes 功能介绍</a>。
-</p><div class="taglist"><a href="https://mrunhap.github.io/tags.html">Tags</a>: <a href="https://mrunhap.github.io/tag-emacs.html">emacs</a> <a href="https://mrunhap.github.io/tag-golang.html">golang</a> </div><div id="archive">
+</p>
+
+
+<p>
+在使用任何 编辑器/IDE 开发时，最核心的需求无非以下几点：
+</p>
+<ul class="org-ul">
+<li>括号的自动匹配</li>
+<li>代码的自动补全</li>
+<li>查找定义、引用</li>
+<li>静态检查</li>
+<li>在项目中模糊查找（文件/字符串）</li>
+</ul>
+<div id="outline-container-orgf89cf1d" class="outline-2">
+<h2 id="orgf89cf1d"><span class="section-number-2">1.</span> 开启 Emacs 自带的括号匹配</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过默认没有开启。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">setq</span> electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+(add-hook 'prog-mode-hook #'electric-pair-mode)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfadb5b0" class="outline-2">
+<h2 id="orgfadb5b0"><span class="section-number-2">2.</span> 安装 straight.el</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+在进行下一步配置之前，我们需要先安装 <a href="https://github.com/raxod502/straight.el">straight.el</a> ，因为我们要用它来安装其他的第三方包。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">setq</span> straight-check-for-modifications '(check-on-save find-when-checking))
+(<span style="color: #800080;">setq</span> straight-vc-git-default-clone-depth 1)
+
+(<span style="color: #800080;">setq</span> straight-disable-native-compile
+      (<span style="color: #800080;">when</span> (fboundp 'native-comp-available-p)
+    (not (native-comp-available-p))))
+
+(<span style="color: #800080;">defvar</span> <span style="color: #a0522d;">bootstrap-version</span>)
+(<span style="color: #800080;">let</span> ((bootstrap-file
+       (expand-file-name <span style="color: #8b2252;">"straight/repos/straight.el/bootstrap.el"</span> user-emacs-directory))
+      (bootstrap-version 5))
+  (<span style="color: #800080;">unless</span> (file-exists-p bootstrap-file)
+    (<span style="color: #800080;">with-current-buffer</span>
+        (url-retrieve-synchronously
+         <span style="color: #8b2252;">"https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"</span>
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+</pre>
+</div>
+<p>
+straight.el 在安装其他包时需要访问 github，如果你的网络不够 <code>绿色</code> 咳咳&#x2026;
+</p>
+
+<p>
+可以将安装时的 <code>github.com</code> 替换为 <code>github.com.cnpmjs.org</code> 。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">defun</span> <span style="color: #0000ff;">+set-github-mirror</span> (oldfunc <span style="color: #228b22;">&amp;rest</span> args)
+  (<span style="color: #800080;">let</span> ((url (apply oldfunc args)))
+    (replace-regexp-in-string (<span style="color: #800080;">rx</span> (group <span style="color: #8b2252;">"github.com"</span>))
+                              <span style="color: #8b2252;">"github.com.cnpmjs.org"</span> url nil nil 1)))
+(advice-add 'straight-vc-git--encode-url <span style="color: #483d8b;">:around</span> #'+set-github-mirror)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org225656a" class="outline-2">
+<h2 id="org225656a"><span class="section-number-2">3.</span> 设置 major-mode</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+安装 <a href="https://github.com/dominikh/go-mode.el">go-mode.el</a> ，其为我们在进行 Golang 开发时提供了相当多的常用功能。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(straight-use-package 'go-mode)
+</pre>
+</div>
+<p>
+设置缩进。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">setq-default</span> tab-width 4
+              indent-tabs-mode nil)
+</pre>
+</div>
+<p>
+使用 <code>goimports</code> 代替 <code>gofmt</code> 在文件保存后自动格式化我们的代码
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">setq</span> gofmt-command <span style="color: #8b2252;">"goimports"</span>)
+(add-hook 'before-save-hook #'gofmt-before-save)
+</pre>
+</div>
+<p>
+如果你使用的是 MacOS 系统，那么需要使用 <a href="https://github.com/purcell/exec-path-from-shell">exec-path-from-shell</a> 让 Emacs
+读取系统的环境变量，不然 Emacs 可能找不到你安装的 go。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">when</span> (eq system-type 'darwin)
+  (straight-use-package 'exec-path-from-shell)
+  (<span style="color: #800080;">setq</span> exec-path-from-shell-arguments '(<span style="color: #8b2252;">"-l"</span>))
+  (add-hook 'after-init-hook #'exec-path-from-shell-initialize)
+  (<span style="color: #800080;">with-eval-after-load</span> <span style="color: #8b2252;">"go-mode"</span>
+    (<span style="color: #800080;">with-eval-after-load</span> <span style="color: #8b2252;">"exec-path-from-shell"</span>
+      (exec-path-from-shell-copy-envs '(<span style="color: #8b2252;">"GOPATH"</span> <span style="color: #8b2252;">"GO111MODULE"</span> <span style="color: #8b2252;">"GOPROXY"</span>)))))
+</pre>
+</div>
+<p>
+go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会打乱我们的窗口布局，其实我们只需要简单的设置下自带的 <code>flymake-mode</code> 就可以方便的在错误之间跳转而不是通过一个单独的 buffer 查看。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(add-hook 'prog-mode-hook #'flymake-mode)
+(<span style="color: #800080;">with-eval-after-load</span> <span style="color: #8b2252;">"flymake"</span>
+  (define-key flymake-mode-map (kbd <span style="color: #8b2252;">"C-c C-b"</span>) 'flymake-show-diagnostics-buffer)
+  (define-key flymake-mode-map (kbd <span style="color: #8b2252;">"M-n"</span>) 'flymake-goto-next-error)
+  (define-key flymake-mode-map (kbd <span style="color: #8b2252;">"M-p"</span>) 'flymake-goto-prev-error))
+</pre>
+</div>
+<p>
+这样就可以使用 <code>M-n</code> ， <code>M-p</code> 在错误之间移动，然后把 go-mode 自动弹出的这个 buffer 关掉。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">setq</span> gofmt-show-errors nil)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4413632" class="outline-2">
+<h2 id="org4413632"><span class="section-number-2">4.</span> 代码补全、跳转</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用 <code>C-p</code> <code>C-n</code> 或者 <code>TAB</code> 进行选择，回车完成补全。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(straight-use-package 'company)
+(add-hook 'prog-mode-hook #'company-mode)
+(<span style="color: #800080;">setq</span> company-tooltip-limit 10
+      company-tooltip-align-annotations t
+      company-tooltip-width-grow-only t
+      company-abort-manual-when-too-short t
+      company-require-match nil
+      company-backends '(company-capf)
+      company-tooltip-margin 0)
+(<span style="color: #800080;">with-eval-after-load</span> <span style="color: #8b2252;">"company"</span>
+  (define-key company-active-map [tab] 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd <span style="color: #8b2252;">"TAB"</span>) 'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd <span style="color: #8b2252;">"C-p"</span>) #'company-select-previous)
+  (define-key company-active-map (kbd <span style="color: #8b2252;">"C-n"</span>) #'company-select-next))
+</pre>
+</div>
+<p>
+安装 <a href="https://github.com/joaotavora/eglot">eglot</a> ，一个 Emacs 中轻量级的 LSP 客户端，在 go-mode 中启用。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(straight-use-package 'eglot)
+(add-hook 'go-mode-hook #'eglot-ensure)
+(<span style="color: #800080;">setq</span> eglot-ignored-server-capabilites '(<span style="color: #483d8b;">:documentHighlightProvider</span>)
+      read-process-output-max (* 1024 1024))
+</pre>
+</div>
+<p>
+eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根目录，如果你的项目包含一些子项目，例如：
+</p>
+<pre class="example" id="orga477fdf">
+├── .git
+├── project1
+│   ├── go.mod
+│   └── main.go
+├── project2
+│   ├── go.mod
+│   └── main.go
+└── project3
+    ├── go.mod
+    └── main.go
+</pre>
+<p>
+如果你不想让 project1 中的代码出现在 project2 的补全中，或者在
+project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，则推荐使用 <code>go.mod</code> 所在的目录为项目的根目录，解决不同项目间的代码补全与跳转影响。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">with-eval-after-load</span> <span style="color: #8b2252;">"go-mode"</span>
+  (<span style="color: #800080;">with-eval-after-load</span> <span style="color: #8b2252;">"project"</span>
+    (<span style="color: #800080;">defun</span> <span style="color: #0000ff;">project-find-go-module</span> (dir)
+      (<span style="color: #800080;">when-let</span> ((root (locate-dominating-file dir <span style="color: #8b2252;">"go.mod"</span>)))
+        (cons 'go-module root)))
+    (<span style="color: #800080;">cl-defmethod</span> <span style="color: #0000ff;">project-root</span> ((project (head go-module)))
+      (cdr project))
+    (add-hook 'project-find-functions #'project-find-go-module)))
+</pre>
+</div>
+<p>
+eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">setq</span> eldoc-idle-dealy 2)
+</pre>
+</div>
+<p>
+如果你想在补全函数时带有占位符，可以对项目进行单独的配置，只需要在项目根目录的 <code>.dir-locals.el</code> 中添加如下代码，eglot 就会在初始化 gopls 之后修改 gopls 的配置，当然这个功能依赖 <a href="https://github.com/joaotavora/yasnippet">yasnippet</a> ，所以我们也需要安装它。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(straight-use-package 'yasnippet)
+(add-hook 'prog-mode-hook #'yas-minor-mode)
+</pre>
+</div>
+<p>
+在项目根目录中创建 <code>.dir-locals.el</code> 。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">((go-mode
+  . ((eglot-workspace-configuration
+      . ((<span style="color: #483d8b;">:gopls</span> . (<span style="color: #483d8b;">:usePlaceholders</span> t)))))))
+</pre>
+</div>
+<p>
+当然也可以在你的配置文件中默认开启，这样就不需要对项目单独设置。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #800080;">setq-default</span> eglot-workspace-configuration
+              '((gopls
+                 (usePlaceholders . t))))
+</pre>
+</div>
+<p>
+另一个非常有用的 tip 是如果你的项目使用了 <a href="https://golang.org/pkg/go/build/#hdr-Build_Constraints">Build Constraints</a> ，也可以针对项目单独修改 <code>gopls</code> 的配置使代码的补全与跳转完美的工作。
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">((go-mode
+  . ((eglot-workspace-configuration
+      . ((<span style="color: #483d8b;">:gopls</span> . (<span style="color: #483d8b;">:buildFlags</span> [<span style="color: #8b2252;">"-tags=debug"</span>])))))))
+</pre>
+</div>
+<p>
+这里就不写出全局开启的示例了，而且这个功能一般不需要全局开启。
+</p>
+</div>
+</div>
+<div id="outline-container-org84765dd" class="outline-2">
+<h2 id="org84765dd"><span class="section-number-2">5.</span> 总结</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以在项目中查找文件、字符串等（ <code>project-find-file</code> <code>project-search</code>
+<code>project-switch-to-buffer</code> ）。
+</p>
+
+<p>
+在安装了 eglot、company-mode 后实现了代码的补全、跳转等功能（ <code>xref-find-definitions</code> <code>xref-find-references</code> ），同时 eglot 配合内置的 flymake 也为我们提供了静态检查。
+</p>
+
+<p>
+当然这些插件的功能远不只这些，例如 eglot 可以帮你重命名函数或变量（同时修改其引用处的名字）， company-mode 不仅可以补全代码也可以补全文件路径、代码片段，在编写 Golang 时需要用到的一些工具链是不是也可以通过
+elisp 管理从而达到一个命令进行安装/更新等。
+</p>
+
+<p>
+在 Emacs 中能限制你的只有你的想象力与行动力，种种强大或实用的功能不可能在一篇文章中全部介绍，剩下的就需要你自己发现或者根据自身特定需求进行扩展了。
+</p>
+</div>
+</div>
+<div class="taglist"><a href="https://mrunhap.github.io/tags.html">Tags</a>: <a href="https://mrunhap.github.io/tag-emacs.html">emacs</a> <a href="https://mrunhap.github.io/tag-golang.html">golang</a> </div><div id="archive">
 <a href="https://mrunhap.github.io/archive.html">Other posts</a>
 </div>
 </div>

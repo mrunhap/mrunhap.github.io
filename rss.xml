@@ -3,240 +3,30 @@
 <channel>
 <title><![CDATA[mrunhap's blog]]></title>
 <description><![CDATA[mrunhap's blog]]></description>
+<description content="feedId:69302620252581888+userId:67829163902733312">feedId:69302620252581888+userId:67829163902733312</description>
 <link>https://mrunhap.github.io/</link>
-<lastBuildDate>Thu, 29 Feb 2024 11:06:34 +0800</lastBuildDate>
-<item>
-  <title><![CDATA[转发微信与QQ的消息到 telegram]]></title>
-  <description><![CDATA[
-<p>
-由于实在受不了微信的种种问题加上 Emcas 上有个非常好用的 telegram 客户端 telega，决定把微信的消息转移到 telegram 中，QQ则只是顺带（绝对不是为了在工作的时候拿 Emacs 聊天），这种方式我已经使用一周了再没打开微信过，当然某些消息类型是转发不了的，如果这些功能（位置等）对你来说是刚需，那还是只能接着用微信。
-</p>
-
-<p>
-这个配置基于 Ubuntu Server Lts，需要一些 Linux 基础（后续或许会补上傻瓜教程或使用 docker-compose 部署的），如果过程中发现需要什么依赖需要自己安装一下，有什么问题也可以通过<a href="mailto:liubolovelife@gmail.com">邮件</a>联系我。
-</p>
-
-<div id="outline-container-orgccbb306" class="outline-2">
-<h2 id="orgccbb306">流程</h2>
-<div class="outline-text-2" id="text-orgccbb306">
-<ul class="org-ul">
-<li>申请 telegram bot，消息是通过 bot 转发的</li>
-<li>配置 ehforwarderbot，efb-telegram-master，用来转发微信消息的 efb-wechat-slave，用来转发 QQ 消息的 ehforwarderbot 和 go-cqhttp。</li>
-<li>运行 ehforwarderbot，登录微信与 QQ</li>
-<li>消息会全部转发到你申请的 telegram bot 中，如果想将其分开可以创建一个 Group（刚创建的时候需要拉个人进来，可以随便找一个），然后找到你的 bot 输入 =/link=， bot 会自动找出最近的消息的发送者，选择你想分开消息的那个然后选择你刚刚创建的 Group，如果 bot 不在 Group 中会要求添加 bot 到 Group 中，然后接着 link 就行了，之后他发来的消息就会由 bot 转发到这个 Group 中而不是在 bot 那里了。</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgd6d6304" class="outline-2">
-<h2 id="orgd6d6304">申请 telegram bot</h2>
-<div class="outline-text-2" id="text-orgd6d6304">
-<p>
-消息是通过 telegram 的 bot 发送的，所以需要先申请一个自己的 bot，打开 telegram 搜索 @botfather 点击 start。
-</p>
-<ol class="org-ol">
-<li>输入 <code>/newbot</code> 创建 bot</li>
-<li>输入 bot 的称呼和用户名（用户名必须以 bot 结尾）</li>
-<li>创建成功后会得到一个 token，在 <code>Use this token to access the HTTP API:</code> 下面，点击会自动复制，要记下来</li>
-<li>配置 bot ：
-<ul class="org-ul">
-<li>允许 bot 读取非指令信息，发送 /setprivacy 给 @botfather，选择你的机器人，点Disable</li>
-<li>允许将 bot 添加进群组，发送 /setjoingroups，选择你的机器人，点Enable</li>
-<li>允许 bot 提供指令列表，发送 /setcommands，选择你的机器人，输入以下内容，复制下来一次性发给 @botfather</li>
-</ul></li>
-</ol>
-<pre class="example" id="org46e0829">
-help - 显示命令列表.
-link - 将远程会话绑定到 Telegram 群组
-chat - 生成会话头
-recog - 回复语音消息以进行识别
-info - 显示当前 Telegram 聊天的信息.
-unlink_all - 将所有远程会话从 Telegram 群组解绑.
-update_info - 更新群组名称和头像
-extra - 获取更多功能
-</pre>
-<ol class="org-ol">
-<li>在搜索那里搜出你刚刚创建的 bot，随便给它发个消息，不然第一次 bot 没法发送消息给你</li>
-<li>接着搜索 @get<sub>id</sub><sub>bot</sub>，点击 start 会发送你的用户 id 给你，后面要用到</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-org0b7a743" class="outline-2">
-<h2 id="org0b7a743">配置微信转发</h2>
-<div class="outline-text-2" id="text-org0b7a743">
-<p>
-安装efb，tg 端与微信端
-</p>
-<div class="org-src-container">
-<pre class="src src-bash">pip3 install ehforwarderbot efb-telegram-master
-pip3 install -U git+https://github.com/ehForwarderBot/efb-wechat-slave
-</pre>
-</div>
-
-<p>
-编辑 efb 配置文件，这里使用 emacs（没有的话可以通过 <code>apt update &amp;&amp; apt install emacs</code> 安装）：
-</p>
-<div class="org-src-container">
-<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/config.yaml
-</pre>
-</div>
-
-<p>
-添加如下内容：
-</p>
-<pre class="example" id="org2950ed5">
-master_channel: blueset.telegram
-slave_channels:
-- blueset.wechat
-</pre>
-<p>
-然后 <code>Ctrl x Ctrl c</code> 保存并退出。
-</p>
-
-<p>
-编辑微信端的配置文件：
-</p>
-<div class="org-src-container">
-<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/blueset.telegram/config.yaml
-</pre>
-</div>
-
-<p>
-添加如下内容：
-</p>
-<pre class="example" id="org00831d6">
-token: "此处替换成你创建的 bot 的 token"
-admins: [此处替换成你从 @get_id_bot 获取的用户 ID]
-</pre>
-
-<p>
-运行： <code>ehforwarderbot &amp;</code>
-之后会出现二维码，使用微信扫码登录即可。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgd04e7b4" class="outline-2">
-<h2 id="orgd04e7b4">配置QQ转发</h2>
-<div class="outline-text-2" id="text-orgd04e7b4">
-<p>
-安装：
-</p>
-<div class="org-src-container">
-<pre class="src src-bash">pip3 install -U git+https://github.com/milkice233/efb-qq-slave
-</pre>
-</div>
-
-<p>
-在 efb 配置文件中添加 QQ 端：
-</p>
-<div class="org-src-container">
-<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/config.yaml
-</pre>
-</div>
-
-<p>
-在 <code>slave_channels</code> 下添加 <code>milkice.qq</code> ：
-</p>
-<pre class="example" id="org3be0ca5">
-master_channel: blueset.telegram
-slave_channels:
-- blueset.wechat
-- milkice.qq
-</pre>
-
-<p>
-配置：
-</p>
-<div class="org-src-container">
-<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/default/milkice.qq/config.yaml
-</pre>
-</div>
-
-<p>
-添加如下内容：
-</p>
-<pre class="example" id="org06851bb">
-Client: GoCQHttp                      # 指定要使用的 QQ 客户端（此处为 GoCQHttp）
-GoCQHttp:
-    type: HTTP                        # 指定 efb-qq-plugin-go-cqhttp 与 GoCQHttp 通信的方式 现阶段仅支持 HTTP
-    access_token:
-    api_root: http://127.0.0.1:5700/  # GoCQHttp API接口地址/端口
-    host: 127.0.0.1                   # efb-qq-slave 所监听的地址用于接收消息
-    port: 8000
-</pre>
-
-<p>
-在<a href="https://github.com/Mrs4s/go-cqhttp/releases">这里</a>下载对应的 go-cqhttp 客户端，配置（刚刚下载和 go-cqhttp 的执行文件和配置文件也放到这里）：
-</p>
-<div class="org-src-container">
-<pre class="src src-bash">emacs ~/.ehforwarderbot/profiles/go-cqhttp/config.yml
-</pre>
-</div>
-
-<p>
-添加如下内容：
-</p>
-<pre class="example" id="org875c75b">
-account:         # 账号相关
-  uin: 000000000 # QQ 账号
-  password: ''   # QQ 密码，为空时使用扫码登录
-
-message:
-  # 上报数据类型
-  # efb-qq-plugin-go-cqhttp 仅支持 array 类型
-  post-format: array
-  # 为Reply附加更多信息
-  extra-reply-data: true
-
-# 默认中间件锚点
-default-middlewares: &amp;default
-  # 访问密钥，强烈推荐在公网的服务器设置
-  access-token: ''
-
-servers:
-  # HTTP 通信设置
-  - http:
-      # HTTP监听地址
-      address: 0.0.0.0:5700
-      # 反向 HTTP 超时时间, 单位秒
-      # 最小值为 5，小于 5 将会忽略本项设置
-      timeout: 5
-      middlewares:
-        &lt;&lt;: *default # 引用默认中间件
-      # 反向 HTTP POST 地址列表
-      post:
-        - url: 'http://127.0.0.1:8000' # 地址
-          secret: ''                   # 密钥保持为空
-</pre>
-
-<p>
-运行 go-cqhttp：
-</p>
-<div class="org-src-container">
-<pre class="src src-bash"><span style="color: #483d8b;">cd</span> ~/.ehforwarderbot/profiles/go-cqhttp &amp;&amp; ./go-cqhttp &amp;
-</pre>
-</div>
-<p>
-扫码登录你的QQ然后重新运行 ehforwarderbot 即可
-</p>
-</div>
-</div>
-<div class="taglist"><a href="https://mrunhap.github.io/tags.html">Tags</a>: <a href="https://mrunhap.github.io/tag-telegram.html">telegram</a> </div>]]></description>
-  <category><![CDATA[telegram]]></category>
-  <link>https://mrunhap.github.io/2022-10-25-%E8%BD%AC%E5%8F%91%E5%BE%AE%E4%BF%A1%E4%B8%8Eqq%E7%9A%84%E6%B6%88%E6%81%AF%E5%88%B0-telegram.html</link>
-  <guid>https://mrunhap.github.io/2022-10-25-%E8%BD%AC%E5%8F%91%E5%BE%AE%E4%BF%A1%E4%B8%8Eqq%E7%9A%84%E6%B6%88%E6%81%AF%E5%88%B0-telegram.html</guid>
-  <pubDate>Tue, 25 Oct 2022 23:07:00 +0800</pubDate>
-</item>
+<lastBuildDate>Wed, 16 Oct 2024 17:10:18 +0800</lastBuildDate>
+<follow_challenge>
+    <feedId>69302620252581888</feedId>
+    <userId>67829163902733312</userId>
+</follow_challenge>
 <item>
   <title><![CDATA[Emacs Golang 开发环境配置]]></title>
   <description><![CDATA[
+<nav id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf89cf1d">1. 开启 Emacs 自带的括号匹配</a></li>
+<li><a href="#orgfadb5b0">2. 安装 straight.el</a></li>
+<li><a href="#org225656a">3. 设置 major-mode</a></li>
+<li><a href="#org4413632">4. 代码补全、跳转</a></li>
+<li><a href="#org84765dd">5. 总结</a></li>
+</ul>
+</div>
+</nav>
 <p>
-使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分
-享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能
-相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑
-定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 <a href="https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md">Emacs builtin
+使用 Emacs 开发 Golang 一段时间时间了，今天将相关配置和踩过的坑总结分享出来，本文主要介绍的并不是从零开始的配置，主要都是与 Golang 开发功能相关的配置，默认认为你已经了解如何在 Emacs 查看一些内置的函数文档，绑定快捷键等基本操作，一些基础的 Emacs 功能可以参考梦梦的 <a href="https://github.com/condy0919/emacs-newbie/blob/master/introduction-to-builtin-modes.md">Emacs builtin
 modes 功能介绍</a>。
 </p>
 
@@ -251,9 +41,9 @@ modes 功能介绍</a>。
 <li>静态检查</li>
 <li>在项目中模糊查找（文件/字符串）</li>
 </ul>
-<div id="outline-container-org2463fca" class="outline-2">
-<h2 id="org2463fca">开启 Emacs 自带的括号匹配</h2>
-<div class="outline-text-2" id="text-org2463fca">
+<div id="outline-container-orgf89cf1d" class="outline-2">
+<h2 id="orgf89cf1d"><span class="section-number-2">1.</span> 开启 Emacs 自带的括号匹配</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过默认没有开启。
 </p>
@@ -264,12 +54,11 @@ Emacs 自带的 <code>electric-pair-mode</code> 已经足够好用，只不过�
 </div>
 </div>
 </div>
-<div id="outline-container-org9fdb71d" class="outline-2">
-<h2 id="org9fdb71d">安装 straight.el</h2>
-<div class="outline-text-2" id="text-org9fdb71d">
+<div id="outline-container-orgfadb5b0" class="outline-2">
+<h2 id="orgfadb5b0"><span class="section-number-2">2.</span> 安装 straight.el</h2>
+<div class="outline-text-2" id="text-2">
 <p>
-在进行下一步配置之前，我们需要先安装 <a href="https://github.com/raxod502/straight.el">straight.el</a> ，因为我们要用它来安
-装其他的第三方包。
+在进行下一步配置之前，我们需要先安装 <a href="https://github.com/raxod502/straight.el">straight.el</a> ，因为我们要用它来安装其他的第三方包。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #800080;">setq</span> straight-check-for-modifications '(check-on-save find-when-checking))
@@ -310,9 +99,9 @@ straight.el 在安装其他包时需要访问 github，如果你的网络不够 
 </div>
 </div>
 </div>
-<div id="outline-container-orgc44aea7" class="outline-2">
-<h2 id="orgc44aea7">设置 major-mode</h2>
-<div class="outline-text-2" id="text-orgc44aea7">
+<div id="outline-container-org225656a" class="outline-2">
+<h2 id="org225656a"><span class="section-number-2">3.</span> 设置 major-mode</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 安装 <a href="https://github.com/dominikh/go-mode.el">go-mode.el</a> ，其为我们在进行 Golang 开发时提供了相当多的常用功能。
 </p>
@@ -352,9 +141,7 @@ straight.el 在安装其他包时需要访问 github，如果你的网络不够 
 </pre>
 </div>
 <p>
-go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会打乱我们的窗
-口布局，其实我们只需要简单的设置下自带的 <code>flymake-mode</code> 就可以方便的在错
-误之间跳转而不是通过一个单独的 buffer 查看。
+go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会打乱我们的窗口布局，其实我们只需要简单的设置下自带的 <code>flymake-mode</code> 就可以方便的在错误之间跳转而不是通过一个单独的 buffer 查看。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(add-hook 'prog-mode-hook #'flymake-mode)
@@ -365,8 +152,7 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 </pre>
 </div>
 <p>
-这样就可以使用 <code>M-n</code> ， <code>M-p</code> 在错误之间移动，然后把 go-mode 自动弹出的这
-个 buffer 关掉。
+这样就可以使用 <code>M-n</code> ， <code>M-p</code> 在错误之间移动，然后把 go-mode 自动弹出的这个 buffer 关掉。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #800080;">setq</span> gofmt-show-errors nil)
@@ -374,12 +160,11 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 </div>
 </div>
 </div>
-<div id="outline-container-org107d633" class="outline-2">
-<h2 id="org107d633">代码补全、跳转</h2>
-<div class="outline-text-2" id="text-org107d633">
+<div id="outline-container-org4413632" class="outline-2">
+<h2 id="org4413632"><span class="section-number-2">4.</span> 代码补全、跳转</h2>
+<div class="outline-text-2" id="text-4">
 <p>
-安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用 <code>C-p</code> <code>C-n</code> 或者 <code>TAB</code> 进行选择，回车完
-成补全。
+安装 <a href="http://company-mode.github.io/">company-mode</a> ，在补全时可以使用 <code>C-p</code> <code>C-n</code> 或者 <code>TAB</code> 进行选择，回车完成补全。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(straight-use-package 'company)
@@ -409,10 +194,9 @@ go-mode 在格式化代码时如果发现错误会弹出一个 buffer，这会�
 </pre>
 </div>
 <p>
-eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根
-目录，如果你的项目包含一些子项目，例如：
+eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项目的根目录，如果你的项目包含一些子项目，例如：
 </p>
-<pre class="example" id="org333257e">
+<pre class="example" id="orga477fdf">
 ├── .git
 ├── project1
 │   ├── go.mod
@@ -426,9 +210,7 @@ eglot 使用 Emacs 内置的 project.el 管理项目，以 .git 目录作为项�
 </pre>
 <p>
 如果你不想让 project1 中的代码出现在 project2 的补全中，或者在
-project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，
-则推荐使用 <code>go.mod</code> 所在的目录为项目的根目录，解决不同项目间的代码补全与
-跳转影响。
+project2 中查找定义时不想要 project1 中的定义出现在你的选择列表中时，则推荐使用 <code>go.mod</code> 所在的目录为项目的根目录，解决不同项目间的代码补全与跳转影响。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #800080;">with-eval-after-load</span> <span style="color: #8b2252;">"go-mode"</span>
@@ -442,17 +224,14 @@ project2 中查找定义时不想要 project1 中的定义出现在你的选择�
 </pre>
 </div>
 <p>
-eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，
-为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。
+eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不是想立即查看，为了防止文档扰乱视线，给 eldoc 设置个 delay 时间。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #800080;">setq</span> eldoc-idle-dealy 2)
 </pre>
 </div>
 <p>
-如果你想在补全函数时带有占位符，可以对项目进行单独的配置，只需要在项目
-根目录的 <code>.dir-locals.el</code> 中添加如下代码，eglot 就会在初始化 gopls 之后
-修改 gopls 的配置，当然这个功能依赖 <a href="https://github.com/joaotavora/yasnippet">yasnippet</a> ，所以我们也需要安装它。
+如果你想在补全函数时带有占位符，可以对项目进行单独的配置，只需要在项目根目录的 <code>.dir-locals.el</code> 中添加如下代码，eglot 就会在初始化 gopls 之后修改 gopls 的配置，当然这个功能依赖 <a href="https://github.com/joaotavora/yasnippet">yasnippet</a> ，所以我们也需要安装它。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(straight-use-package 'yasnippet)
@@ -478,8 +257,7 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 </pre>
 </div>
 <p>
-另一个非常有用的 tip 是如果你的项目使用了 <a href="https://golang.org/pkg/go/build/#hdr-Build_Constraints">Build Constraints</a> ，也可以针
-对项目单独修改 <code>gopls</code> 的配置使代码的补全与跳转完美的工作。
+另一个非常有用的 tip 是如果你的项目使用了 <a href="https://golang.org/pkg/go/build/#hdr-Build_Constraints">Build Constraints</a> ，也可以针对项目单独修改 <code>gopls</code> 的配置使代码的补全与跳转完美的工作。
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">((go-mode
@@ -492,32 +270,25 @@ eglot 默认会使用 eldoc 显示函数等文档，但是很多时候我们不�
 </p>
 </div>
 </div>
-<div id="outline-container-org06d823e" class="outline-2">
-<h2 id="org06d823e">总结</h2>
-<div class="outline-text-2" id="text-org06d823e">
+<div id="outline-container-org84765dd" class="outline-2">
+<h2 id="org84765dd"><span class="section-number-2">5.</span> 总结</h2>
+<div class="outline-text-2" id="text-5">
 <p>
-Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以
-在项目中查找文件、字符串等（ <code>project-find-file</code> <code>project-search</code>
+Emacs 内置的 electric-pair-mode 帮我们实现了括号匹配， project.el 可以在项目中查找文件、字符串等（ <code>project-find-file</code> <code>project-search</code>
 <code>project-switch-to-buffer</code> ）。
 </p>
 
 <p>
-在安装了 eglot、company-mode 后实现了代码的补全、跳转等功能
-（ <code>xref-find-definitions</code> <code>xref-find-references</code> ），同时 eglot 配合内置
-的 flymake 也为我们提供了静态检查。
+在安装了 eglot、company-mode 后实现了代码的补全、跳转等功能（ <code>xref-find-definitions</code> <code>xref-find-references</code> ），同时 eglot 配合内置的 flymake 也为我们提供了静态检查。
 </p>
 
 <p>
-当然这些插件的功能远不只这些，例如 eglot 可以帮你重命名函数或变量（同
-时修改其引用处的名字）， company-mode 不仅可以补全代码也可以补全文件路
-径、代码片段，在编写 Golang 时需要用到的一些工具链是不是也可以通过
+当然这些插件的功能远不只这些，例如 eglot 可以帮你重命名函数或变量（同时修改其引用处的名字）， company-mode 不仅可以补全代码也可以补全文件路径、代码片段，在编写 Golang 时需要用到的一些工具链是不是也可以通过
 elisp 管理从而达到一个命令进行安装/更新等。
 </p>
 
 <p>
-在 Emacs 中能限制你的只有你的想象力与行动力，种种强大或实用的功能不可
-能在一篇文章中全部介绍，剩下的就需要你自己发现或者根据自身特定需求进行
-扩展了。
+在 Emacs 中能限制你的只有你的想象力与行动力，种种强大或实用的功能不可能在一篇文章中全部介绍，剩下的就需要你自己发现或者根据自身特定需求进行扩展了。
 </p>
 </div>
 </div>
